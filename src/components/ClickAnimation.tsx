@@ -15,17 +15,19 @@ const ClickAnimation = () => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Create a new ripple with South Indian color scheme
+      // Create a new ripple with enhanced color scheme
       const colorOptions = [
-        `hsla(${Math.random() * 20 + 25}, 70%, 60%, 0.7)`, // Warmer orange/red tones
-        `hsla(${Math.random() * 40 + 140}, 60%, 50%, 0.7)`, // Green tones
-        `hsla(${Math.random() * 20 + 35}, 80%, 70%, 0.7)`, // Golden tones
+        `hsla(${Math.random() * 20 + 25}, 90%, 60%, 0.7)`, // Brighter orange/red tones
+        `hsla(${Math.random() * 40 + 140}, 80%, 50%, 0.7)`, // Vibrant green tones
+        `hsla(${Math.random() * 20 + 35}, 100%, 70%, 0.7)`, // Brighter golden tones
+        `hsla(${Math.random() * 15 + 355}, 90%, 65%, 0.7)`, // Rich pink tones
+        `hsla(${Math.random() * 30 + 195}, 85%, 60%, 0.7)`, // Deep blue tones
       ];
       
       const newRipple = {
         x: e.clientX,
         y: e.clientY,
-        size: Math.random() * 100 + 100, // Larger size between 100 and 200
+        size: Math.random() * 120 + 120, // Larger size between 120 and 240
         color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
         id: counter,
       };
@@ -36,7 +38,7 @@ const ClickAnimation = () => {
       // Remove the ripple after animation
       setTimeout(() => {
         setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id));
-      }, 1000);
+      }, 1200);
     };
 
     document.addEventListener('click', handleClick);
@@ -59,8 +61,9 @@ const ClickAnimation = () => {
             height: ripple.size,
             backgroundColor: ripple.color,
             transform: 'scale(0)',
-            opacity: 0.8,
-            animation: 'ripple 1s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            opacity: 0.9,
+            animation: 'ripple 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            boxShadow: `0 0 20px ${ripple.color}`
           }}
         />
       ))}

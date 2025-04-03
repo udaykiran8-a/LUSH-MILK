@@ -10,6 +10,7 @@ import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import ClickAnimation from "./components/ClickAnimation";
+import CursorSparkle from "./components/CursorSparkle";
 
 // Create a client with better error handling
 const queryClient = new QueryClient({
@@ -27,6 +28,7 @@ const App = () => (
     <BrowserRouter>
       <TooltipProvider>
         <ClickAnimation />
+        <CursorSparkle />
         <Toaster />
         <Sonner />
         <Routes>
