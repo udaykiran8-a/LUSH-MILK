@@ -15,29 +15,41 @@ const ClickAnimation = () => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Create a new ripple with enhanced color scheme
+      // Enhanced color scheme with more vibrant colors
       const colorOptions = [
-        `hsla(${Math.random() * 20 + 25}, 90%, 60%, 0.7)`, // Brighter orange/red tones
-        `hsla(${Math.random() * 40 + 140}, 80%, 50%, 0.7)`, // Vibrant green tones
-        `hsla(${Math.random() * 20 + 35}, 100%, 70%, 0.7)`, // Brighter golden tones
-        `hsla(${Math.random() * 15 + 355}, 90%, 65%, 0.7)`, // Rich pink tones
-        `hsla(${Math.random() * 30 + 195}, 85%, 60%, 0.7)`, // Deep blue tones
+        `hsla(${Math.random() * 20 + 25}, 95%, 65%, 0.8)`, // Brighter orange/red tones
+        `hsla(${Math.random() * 40 + 140}, 85%, 55%, 0.8)`, // Vibrant green tones
+        `hsla(${Math.random() * 20 + 35}, 100%, 75%, 0.8)`, // Brighter golden tones
+        `hsla(${Math.random() * 15 + 355}, 95%, 70%, 0.8)`, // Rich pink tones
+        `hsla(${Math.random() * 30 + 195}, 90%, 65%, 0.8)`, // Deep blue tones
+        `hsla(${Math.random() * 40 + 260}, 90%, 70%, 0.8)`, // Purple tones
+        `hsla(${Math.random() * 30 + 290}, 90%, 75%, 0.8)`, // Magenta tones
       ];
       
-      const newRipple = {
-        x: e.clientX,
-        y: e.clientY,
-        size: Math.random() * 120 + 120, // Larger size between 120 and 240
-        color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
-        id: counter,
-      };
+      // Create multiple ripples for a more dramatic effect
+      const rippleCount = Math.floor(Math.random() * 2) + 2; // 2-3 ripples per click
       
-      setRipples((prev) => [...prev, newRipple]);
-      setCounter((prev) => prev + 1);
+      for (let i = 0; i < rippleCount; i++) {
+        const delay = i * 100; // Stagger the ripples
+        
+        const newRipple = {
+          x: e.clientX + (Math.random() * 20 - 10),
+          y: e.clientY + (Math.random() * 20 - 10),
+          size: Math.random() * 140 + 120, // Larger size between 120 and 260
+          color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
+          id: counter + i,
+        };
+        
+        setTimeout(() => {
+          setRipples((prev) => [...prev, newRipple]);
+        }, delay);
+      }
       
-      // Remove the ripple after animation
+      setCounter((prev) => prev + rippleCount);
+      
+      // Remove the ripples after animation
       setTimeout(() => {
-        setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id));
+        setRipples((prev) => prev.filter((ripple) => ripple.id < counter));
       }, 1200);
     };
 
@@ -63,7 +75,7 @@ const ClickAnimation = () => {
             transform: 'scale(0)',
             opacity: 0.9,
             animation: 'ripple 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-            boxShadow: `0 0 20px ${ripple.color}`
+            boxShadow: `0 0 30px ${ripple.color}`
           }}
         />
       ))}

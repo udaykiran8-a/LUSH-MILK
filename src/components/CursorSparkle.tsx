@@ -24,8 +24,8 @@ const CursorSparkle = () => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       
-      // Create new sparkles occasionally
-      if (Math.random() > 0.7) {
+      // Increased sparkle frequency - reduced threshold from 0.7 to 0.4
+      if (Math.random() > 0.4) {
         const colors = [
           "#FF5733", // Orange
           "#FFC300", // Gold
@@ -34,22 +34,32 @@ const CursorSparkle = () => {
           "#FF5E8D", // Pink
           "#3498DB", // Blue
           "#1ABC9C", // Teal
+          "#F97316", // Bright Orange
+          "#D946EF", // Magenta Pink
+          "#8B5CF6", // Vivid Purple
+          "#0EA5E9", // Ocean Blue
         ];
         
-        const newSparkle = {
-          x: e.clientX + (Math.random() * 20 - 10),
-          y: e.clientY + (Math.random() * 20 - 10),
-          color: colors[Math.floor(Math.random() * colors.length)],
-          id: counter,
-        };
+        // Create multiple sparkles per movement for a more dramatic effect
+        const sparkleCount = Math.floor(Math.random() * 3) + 1;
         
-        setSparkles((prev) => [...prev, newSparkle]);
-        setCounter((prev) => prev + 1);
+        for (let i = 0; i < sparkleCount; i++) {
+          const newSparkle = {
+            x: e.clientX + (Math.random() * 30 - 15),
+            y: e.clientY + (Math.random() * 30 - 15),
+            color: colors[Math.floor(Math.random() * colors.length)],
+            id: counter + i,
+          };
+          
+          setSparkles((prev) => [...prev, newSparkle]);
+        }
         
-        // Remove the sparkle after animation
+        setCounter((prev) => prev + sparkleCount);
+        
+        // Remove the sparkles after animation
         setTimeout(() => {
-          setSparkles((prev) => prev.filter((sparkle) => sparkle.id !== newSparkle.id));
-        }, 600);
+          setSparkles((prev) => prev.filter((sparkle) => sparkle.id < counter));
+        }, 800);
       }
     };
 
@@ -62,9 +72,9 @@ const CursorSparkle = () => {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
-      {/* Custom cursor */}
+      {/* Enhanced rainbow cursor */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[100]"
+        className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[100]"
         style={{
           x: springX,
           y: springY,
@@ -72,33 +82,35 @@ const CursorSparkle = () => {
           translateY: "-50%",
         }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 opacity-70 blur-[2px]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 opacity-70 blur-[3px] animate-pulse-light"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white"></div>
       </motion.div>
       
-      {/* Falling sparkles */}
+      {/* More falling sparkles with varied sizes */}
       {sparkles.map((sparkle) => (
         <motion.div
           key={sparkle.id}
-          className="absolute w-2 h-2 rounded-full"
+          className="absolute rounded-full"
           initial={{ 
             x: sparkle.x,
             y: sparkle.y,
-            scale: 0.5,
-            opacity: 0.8
+            scale: Math.random() * 0.5 + 0.5,
+            opacity: 0.9
           }}
           animate={{ 
-            y: sparkle.y + 30,
+            y: sparkle.y + 40,
             scale: 0,
             opacity: 0
           }}
           transition={{ 
-            duration: 0.6,
+            duration: Math.random() * 0.4 + 0.6,
             ease: "easeOut"
           }}
           style={{
+            width: Math.random() * 5 + 2 + "px",
+            height: Math.random() * 5 + 2 + "px",
             backgroundColor: sparkle.color,
-            boxShadow: `0 0 5px ${sparkle.color}`,
+            boxShadow: `0 0 8px ${sparkle.color}`,
           }}
         />
       ))}
