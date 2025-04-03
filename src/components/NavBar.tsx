@@ -11,6 +11,11 @@ const NavBar = () => {
     <nav className="bg-white/80 backdrop-blur-md py-4 px-6 fixed w-full z-50 shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
+          <img 
+            src="/lovable-uploads/3907e856-b011-4bd0-8422-7cff5037d830.png" 
+            alt="LushMilk Logo" 
+            className="h-12 w-12 bg-white rounded-full p-1"
+          />
           <span className="text-2xl font-serif font-bold text-lushmilk-brown">Lush<span className="text-lushmilk-terracotta">Milk</span></span>
         </Link>
         

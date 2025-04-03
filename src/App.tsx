@@ -10,6 +10,7 @@ import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import React from "react";
+import ClickAnimation from "./components/ClickAnimation";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <TooltipProvider>
+          <ClickAnimation />
           <Toaster />
           <Sonner />
           <Routes>

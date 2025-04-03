@@ -137,3 +137,14 @@
     @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300;
   }
 }
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

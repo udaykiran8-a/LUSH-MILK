@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, ShoppingCart, Check, Leaf, Droplet } from 'lucide-react';
+import CulturalBackground from '@/components/CulturalBackground';
 
 const ProductCard = ({ product }: { product: any }) => {
   return (
@@ -125,42 +127,48 @@ const Products = () => {
 
   return (
     <Layout>
-      <section className="bg-lushmilk-offwhite py-12">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-serif font-bold text-lushmilk-brown text-center mb-8">
-            Our Products
-          </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+      <CulturalBackground variant="temple">
+        <section className="bg-lushmilk-offwhite py-12">
+          <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-serif font-bold text-lushmilk-brown text-center mb-8">
+              Our Products
+            </h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </CulturalBackground>
 
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown text-center mb-8">
-            Why Choose LushMilk?
-          </h2>
-          <ProductFeatures />
-        </div>
-      </section>
+      <CulturalBackground variant="kolam">
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown text-center mb-8">
+              Why Choose LushMilk?
+            </h2>
+            <ProductFeatures />
+          </div>
+        </section>
+      </CulturalBackground>
 
-      <section className="bg-lushmilk-cream py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-4">
-            Ready to Experience the Taste of Purity?
-          </h2>
-          <p className="text-gray-800 mb-6">
-            Order now and get farm-fresh milk delivered to your doorstep.
-          </p>
-          <Button className="bg-lushmilk-terracotta hover:bg-lushmilk-brown text-white transition-colors flex items-center justify-center gap-2">
-            <ShoppingCart size={18} />
-            <span>Order Now</span>
-          </Button>
-        </div>
-      </section>
+      <CulturalBackground variant="rangoli">
+        <section className="bg-lushmilk-cream py-12">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-4">
+              Ready to Experience the Taste of Purity?
+            </h2>
+            <p className="text-gray-800 mb-6">
+              Order now and get farm-fresh milk delivered to your doorstep.
+            </p>
+            <Button className="bg-lushmilk-terracotta hover:bg-lushmilk-brown text-white transition-colors flex items-center justify-center gap-2">
+              <ShoppingCart size={18} />
+              <span>Order Now</span>
+            </Button>
+          </div>
+        </section>
+      </CulturalBackground>
     </Layout>
   );
 };
