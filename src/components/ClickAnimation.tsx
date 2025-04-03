@@ -15,12 +15,18 @@ const ClickAnimation = () => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Create a new ripple
+      // Create a new ripple with South Indian color scheme
+      const colorOptions = [
+        `hsla(${Math.random() * 20 + 25}, 70%, 60%, 0.7)`, // Warmer orange/red tones
+        `hsla(${Math.random() * 40 + 140}, 60%, 50%, 0.7)`, // Green tones
+        `hsla(${Math.random() * 20 + 35}, 80%, 70%, 0.7)`, // Golden tones
+      ];
+      
       const newRipple = {
         x: e.clientX,
         y: e.clientY,
-        size: Math.random() * 100 + 50, // Random size between 50 and 150
-        color: `hsla(${Math.random() * 40 + 15}, 70%, 60%, 0.6)`, // Random color in our theme palette
+        size: Math.random() * 100 + 100, // Larger size between 100 and 200
+        color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
         id: counter,
       };
       
@@ -54,7 +60,7 @@ const ClickAnimation = () => {
             backgroundColor: ripple.color,
             transform: 'scale(0)',
             opacity: 0.8,
-            animation: 'ripple 1s linear forwards',
+            animation: 'ripple 1s cubic-bezier(0.4, 0, 0.2, 1) forwards',
           }}
         />
       ))}
