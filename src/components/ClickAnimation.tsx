@@ -27,15 +27,15 @@ const ClickAnimation = () => {
       ];
       
       // Create multiple ripples for a more dramatic effect
-      const rippleCount = Math.floor(Math.random() * 2) + 2; // 2-3 ripples per click
+      const rippleCount = Math.floor(Math.random() * 3) + 4; // 4-6 ripples per click for more drama
       
       for (let i = 0; i < rippleCount; i++) {
-        const delay = i * 100; // Stagger the ripples
+        const delay = i * 80; // Stagger the ripples, slightly faster
         
         const newRipple = {
-          x: e.clientX + (Math.random() * 20 - 10),
-          y: e.clientY + (Math.random() * 20 - 10),
-          size: Math.random() * 140 + 120, // Larger size between 120 and 260
+          x: e.clientX + (Math.random() * 30 - 15), // Wider spread
+          y: e.clientY + (Math.random() * 30 - 15), // Wider spread
+          size: Math.random() * 160 + 120, // Larger size between 120 and 280
           color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
           id: counter + i,
         };
@@ -75,7 +75,7 @@ const ClickAnimation = () => {
             transform: 'scale(0)',
             opacity: 0.9,
             animation: 'ripple 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-            boxShadow: `0 0 30px ${ripple.color}`
+            boxShadow: `0 0 40px ${ripple.color}` // Enhanced glow
           }}
         />
       ))}
