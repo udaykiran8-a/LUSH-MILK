@@ -1,93 +1,100 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, ShoppingCart, Check, Leaf, Droplet } from 'lucide-react';
+import { Check, Leaf, Droplet, ShoppingCart, Search, FilterX } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ProductCard, { Product } from '@/components/ProductCard';
+import { Input } from '@/components/ui/input';
 
-const ProductCard = ({ product, index }: { product: any; index: number }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 20 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ 
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.43, 0.13, 0.23, 0.96]
-      }}
-      whileHover={{ 
-        scale: 1.05,
-        transition: { duration: 0.3 }
-      }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <Card className="product-card transform transition-all duration-300 hover:shadow-xl overflow-hidden bg-white border-lushmilk-terracotta/30">
-        <div className="product-image-container">
-          <img 
-            src={product.image} 
-            alt={product.name} 
-            className="product-image"
-          />
-          <Badge className="product-badge bg-lushmilk-terracotta hover:bg-lushmilk-deepred text-white">
-            {product.category}
-          </Badge>
-        </div>
-        <CardHeader className="pb-2">
-          <CardTitle className="product-title text-lushmilk-richbrown">
-            {product.name}
-          </CardTitle>
-          <CardDescription className="text-lushmilk-charcoal font-medium">
-            {product.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  className={`w-4 h-4 ${i < Math.floor(product.rating) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
-                />
-              ))}
-              <span className="ml-1 text-sm text-lushmilk-brown">
-                {product.rating}
-              </span>
-            </div>
-          </div>
-          <p className="product-price text-lushmilk-terracotta font-bold">
-            ₹{product.price * 70} <span className="text-sm font-normal text-lushmilk-brown">per liter</span>
-          </p>
-        </CardContent>
-        <CardFooter className="pt-0">
-          <Button 
-            className="w-full bg-lushmilk-terracotta hover:bg-lushmilk-brown text-white transition-colors flex items-center justify-center gap-2 rounded-md"
-            onClick={(e) => {
-              // Add a small popup effect on click
-              const el = e.currentTarget;
-              el.classList.add('animate-bounce-small');
-              setTimeout(() => {
-                el.classList.remove('animate-bounce-small');
-              }, 500);
-            }}
-          >
-            <ShoppingCart size={16} />
-            <span>Add to Cart</span>
-          </Button>
-        </CardFooter>
-      </Card>
-    </motion.div>
-  );
-};
+// Sample product data
+const allProducts: Product[] = [
+  {
+    id: 1,
+    name: "Full Cream Milk",
+    description: "Rich and creamy, perfect for all your culinary needs with high fat content.",
+    price: 3.50,
+    rating: 4.8,
+    category: "Cow Milk",
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    popular: true
+  },
+  {
+    id: 2,
+    name: "Toned Milk",
+    description: "Light and refreshing, ideal for everyday consumption with reduced fat content.",
+    price: 2.80,
+    rating: 4.2,
+    category: "Cow Milk",
+    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    id: 3,
+    name: "Organic Milk",
+    description: "Certified organic, sourced from sustainable farms with no added hormones.",
+    price: 4.50,
+    rating: 4.8,
+    category: "Cow Milk",
+    image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    popular: true
+  },
+  {
+    id: 4,
+    name: "Buffalo Milk",
+    description: "Thick and nutritious, a traditional favorite with higher protein content.",
+    price: 4.00,
+    rating: 4.6,
+    category: "Buffalo Milk",
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    popular: true
+  },
+  {
+    id: 5,
+    name: "Low Fat Milk",
+    description: "Perfect for health-conscious individuals with reduced fat content.",
+    price: 2.90,
+    rating: 4.1,
+    category: "Cow Milk",
+    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    id: 6,
+    name: "A2 Milk",
+    description: "Premium milk from indigenous cow breeds with A2 beta-casein protein.",
+    price: 5.20,
+    rating: 4.9,
+    category: "Premium Milk",
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    popular: true
+  },
+  {
+    id: 7,
+    name: "Farm Fresh Milk",
+    description: "Delivered straight from our farms within hours of milking.",
+    price: 3.80,
+    rating: 4.7,
+    category: "Cow Milk",
+    image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+  },
+  {
+    id: 8,
+    name: "Premium Buffalo Milk",
+    description: "Extra creamy and rich buffalo milk from our premium herds.",
+    price: 4.50,
+    rating: 4.8,
+    category: "Buffalo Milk",
+    image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuZDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+  }
+];
 
 const ProductFeatures = () => {
   return (
-    <div className="bg-white/95 rounded-lg shadow-lg p-6 mb-8 border border-lushmilk-cream">
+    <div className="bg-white rounded-lg shadow-sm p-6 mb-8 border border-lushmilk-cream/30">
       <Tabs defaultValue="benefits" className="w-full">
-        <TabsList className="w-full mb-4 bg-lushmilk-cream/50">
+        <TabsList className="w-full mb-4 bg-lushmilk-cream/20">
           <TabsTrigger 
             value="benefits" 
             className="flex-1 data-[state=active]:bg-lushmilk-terracotta data-[state=active]:text-white"
@@ -168,7 +175,7 @@ const ProductFeatures = () => {
               </li>
               <li className="flex items-start gap-2 text-lushmilk-charcoal">
                 <Check className="mt-1 h-5 w-5 text-lushmilk-green flex-shrink-0" />
-                <span>Support for local farmers and their families</span>
+                <span>Supporting local farming communities</span>
               </li>
             </ul>
           </div>
@@ -179,48 +186,22 @@ const ProductFeatures = () => {
 };
 
 const Products = () => {
-  const products = [
-    {
-      id: 1,
-      name: "Full Cream Milk",
-      description: "Rich and creamy, perfect for all your culinary needs.",
-      image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      category: "Cow Milk",
-      rating: 4.5,
-      price: 3.50,
-    },
-    {
-      id: 2,
-      name: "Toned Milk",
-      description: "Light and refreshing, ideal for everyday consumption.",
-      image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      category: "Cow Milk",
-      rating: 4.2,
-      price: 2.80,
-    },
-    {
-      id: 3,
-      name: "Organic Milk",
-      description: "Certified organic, sourced from sustainable farms.",
-      image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      category: "Cow Milk",
-      rating: 4.8,
-      price: 4.50,
-    },
-    {
-      id: 4,
-      name: "Buffalo Milk",
-      description: "Thick and nutritious, a traditional favorite.",
-      image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      category: "Buffalo Milk",
-      rating: 4.6,
-      price: 4.00,
-    },
-  ];
+  const [category, setCategory] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const categories = ["All", "Cow Milk", "Buffalo Milk", "Premium Milk"];
+  
+  const filteredProducts = allProducts.filter(product => {
+    const matchesCategory = category === null || category === "All" || product.category === category;
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <Layout>
-      <section className="bg-lushmilk-offwhite py-12">
+      <section className="py-12 bg-gradient-to-b from-white via-lushmilk-cream/5 to-white">
         <div className="container mx-auto px-4">
           <motion.div 
             className="text-center mb-12"
@@ -230,63 +211,113 @@ const Products = () => {
           >
             <h1 className="text-4xl font-serif font-bold text-lushmilk-richbrown mb-4 relative inline-block">
               Our Products
-              <div className="absolute w-full h-1 bg-lushmilk-terracotta bottom-0 left-0 rounded-full"></div>
+              <motion.div 
+                className="absolute w-full h-1 bg-lushmilk-terracotta bottom-0 left-0 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              ></motion.div>
             </h1>
             <p className="text-lushmilk-brown text-lg max-w-2xl mx-auto">
               Experience the authentic taste of our farm-fresh milk products, crafted with traditional South Indian methods.
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {products.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder="Search products..."
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                    onClick={() => setSearchTerm("")}
+                  >
+                    <FilterX className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+              
+              <div className="flex gap-2 flex-wrap">
+                {categories.map((cat) => (
+                  <Button
+                    key={cat}
+                    variant={category === cat || (cat === "All" && category === null) ? "default" : "outline"}
+                    className={
+                      category === cat || (cat === "All" && category === null)
+                        ? "bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
+                        : "border-lushmilk-terracotta text-lushmilk-brown hover:bg-lushmilk-cream/20"
+                    }
+                    onClick={() => setCategory(cat === "All" ? null : cat)}
+                  >
+                    {cat}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
+            <ProductFeatures />
           </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-gradient-to-b from-lushmilk-offwhite to-white">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-8"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-serif font-semibold text-lushmilk-richbrown mb-2">
-              Why Choose LushMilk?
-            </h2>
-            <p className="text-lushmilk-brown text-lg max-w-2xl mx-auto">
-              Our milk is more than just a beverage - it's a tradition of quality and purity.
-            </p>
-          </motion.div>
-          <ProductFeatures />
-        </div>
-      </section>
-
-      <section className="bg-lushmilk-cream py-16">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div 
-            className="max-w-2xl mx-auto bg-white/95 p-8 rounded-lg shadow-lg border border-lushmilk-terracotta/20"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-serif font-semibold text-lushmilk-richbrown mb-4">
-              Ready to Experience the Taste of Purity?
-            </h2>
-            <p className="text-lushmilk-brown text-lg mb-6">
-              Order now and get farm-fresh milk delivered to your doorstep within hours.
-            </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product, index) => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  index={index}
+                />
+              ))}
+            </div>
+          ) : (
+            <motion.div 
+              className="text-center py-16 bg-white rounded-lg shadow-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
             >
-              <Button className="bg-lushmilk-terracotta hover:bg-lushmilk-brown text-white transition-colors flex items-center justify-center gap-2 px-8 py-6 text-lg rounded-md">
-                <ShoppingCart size={20} />
-                <span>Order Now</span>
+              <FilterX className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+              <h2 className="text-2xl font-medium text-gray-400 mb-4">No products found</h2>
+              <p className="text-gray-500 mb-8">Try adjusting your search or filter criteria</p>
+              <Button 
+                onClick={() => {
+                  setCategory(null);
+                  setSearchTerm("");
+                }}
+                className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90"
+              >
+                Reset Filters
               </Button>
             </motion.div>
+          )}
+          
+          <motion.div 
+            className="mt-16 p-8 bg-lushmilk-cream/20 rounded-lg shadow-sm border border-lushmilk-cream/30 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-4">
+              Daily Fresh Deliveries
+            </h2>
+            <p className="text-lushmilk-brown text-lg mb-6 max-w-2xl mx-auto">
+              Subscribe to our daily delivery service and never run out of fresh milk.
+              We deliver right to your doorstep before sunrise.
+            </p>
+            <Button 
+              asChild
+              className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
+            >
+              <Link to="/cart" className="flex items-center gap-2">
+                <ShoppingCart size={18} />
+                Start Subscription
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </section>

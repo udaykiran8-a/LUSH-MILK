@@ -15,27 +15,27 @@ const ClickAnimation = () => {
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      // Enhanced color scheme with more vibrant colors
+      // Enhanced color scheme with more vibrant colors and better contrast
       const colorOptions = [
-        `hsla(${Math.random() * 20 + 25}, 95%, 65%, 0.8)`, // Brighter orange/red tones
-        `hsla(${Math.random() * 40 + 140}, 85%, 55%, 0.8)`, // Vibrant green tones
-        `hsla(${Math.random() * 20 + 35}, 100%, 75%, 0.8)`, // Brighter golden tones
-        `hsla(${Math.random() * 15 + 355}, 95%, 70%, 0.8)`, // Rich pink tones
-        `hsla(${Math.random() * 30 + 195}, 90%, 65%, 0.8)`, // Deep blue tones
-        `hsla(${Math.random() * 40 + 260}, 90%, 70%, 0.8)`, // Purple tones
-        `hsla(${Math.random() * 30 + 290}, 90%, 75%, 0.8)`, // Magenta tones
+        `hsla(${Math.random() * 20 + 25}, 95%, 65%, 0.9)`, // Brighter orange/red tones
+        `hsla(${Math.random() * 40 + 140}, 85%, 55%, 0.9)`, // Vibrant green tones
+        `hsla(${Math.random() * 20 + 35}, 100%, 75%, 0.9)`, // Brighter golden tones
+        `hsla(${Math.random() * 15 + 355}, 95%, 70%, 0.9)`, // Rich pink tones
+        `hsla(${Math.random() * 30 + 195}, 90%, 65%, 0.9)`, // Deep blue tones
+        `hsla(${Math.random() * 40 + 260}, 90%, 70%, 0.9)`, // Purple tones
       ];
       
-      // Create multiple ripples for a more dramatic effect
-      const rippleCount = Math.floor(Math.random() * 3) + 4; // 4-6 ripples per click for more drama
+      // Create more ripples for a dramatic effect
+      const rippleCount = Math.floor(Math.random() * 4) + 5; // 5-8 ripples per click for more drama
       
       for (let i = 0; i < rippleCount; i++) {
-        const delay = i * 80; // Stagger the ripples, slightly faster
+        const delay = i * 60; // Faster stagger for more responsive feel
+        const size = Math.random() * 40 + 80; // Varied sizes for more natural feel
         
         const newRipple = {
           x: e.clientX + (Math.random() * 30 - 15), // Wider spread
           y: e.clientY + (Math.random() * 30 - 15), // Wider spread
-          size: Math.random() * 160 + 120, // Larger size between 120 and 280
+          size: size,
           color: colorOptions[Math.floor(Math.random() * colorOptions.length)],
           id: counter + i,
         };
@@ -47,10 +47,10 @@ const ClickAnimation = () => {
       
       setCounter((prev) => prev + rippleCount);
       
-      // Remove the ripples after animation
+      // Remove ripples after animation completes
       setTimeout(() => {
-        setRipples((prev) => prev.filter((ripple) => ripple.id < counter));
-      }, 1200);
+        setRipples((prev) => prev.filter((_, i) => i >= rippleCount));
+      }, 1000);
     };
 
     document.addEventListener('click', handleClick);
@@ -61,11 +61,11 @@ const ClickAnimation = () => {
   }, [counter]);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
       {ripples.map((ripple) => (
         <div
           key={ripple.id}
-          className="absolute rounded-full animate-ripple pointer-events-none"
+          className="absolute rounded-full animate-ripple"
           style={{
             left: ripple.x - ripple.size / 2,
             top: ripple.y - ripple.size / 2,
@@ -74,8 +74,9 @@ const ClickAnimation = () => {
             backgroundColor: ripple.color,
             transform: 'scale(0)',
             opacity: 0.9,
-            animation: 'ripple 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-            boxShadow: `0 0 40px ${ripple.color}` // Enhanced glow
+            animation: 'ripple 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+            boxShadow: `0 0 ${ripple.size/4}px ${ripple.color}`, // Enhanced glow
+            zIndex: 9999,
           }}
         />
       ))}
