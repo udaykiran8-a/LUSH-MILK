@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "./contexts/CartContext";
-import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Pages
 import Index from "./pages/Index";
