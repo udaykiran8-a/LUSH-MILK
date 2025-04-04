@@ -60,7 +60,7 @@ const NavBar = () => {
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/90 shadow-md backdrop-blur-md py-2' : 'bg-white/60 backdrop-blur-sm py-4'
+        scrolled ? 'bg-white shadow-md py-2' : 'bg-white py-4'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
@@ -131,7 +131,7 @@ const NavBar = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
-            className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg py-4 px-6 z-50"
+            className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6 z-50"
             initial="hidden"
             animate="visible"
             exit="hidden"

@@ -57,7 +57,7 @@ const SouthIndianHero: React.FC<SouthIndianHeroProps> = ({
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-4 bg-white">
       {/* Content */}
       <motion.div 
-        className="relative z-20 max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-lg border border-lushmilk-cream/20"
+        className="relative z-20 max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-lg"
         initial="initial"
         animate="animate"
         variants={fadeIn}
@@ -69,9 +69,9 @@ const SouthIndianHero: React.FC<SouthIndianHeroProps> = ({
           className="mb-6"
         >
           <img 
-            src="/lovable-uploads/3907e856-b011-4bd0-8422-7830-5037d830.png" 
+            src="/lovable-uploads/3907e856-b011-4bd0-8422-7cff5037d830.png" 
             alt="LushMilk Logo" 
-            className="h-32 w-32 mx-auto mb-6 drop-shadow-lg" 
+            className="h-32 w-32 mx-auto mb-6" 
           />
         </motion.div>
         

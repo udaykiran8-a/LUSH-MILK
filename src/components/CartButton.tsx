@@ -14,14 +14,15 @@ const CartButton = () => {
     <Button 
       asChild
       variant="ghost" 
-      className="relative"
+      className="relative hover:bg-lushmilk-cream/20"
+      aria-label="Shopping cart"
     >
       <Link to="/cart">
         <ShoppingCart className="h-5 w-5 mr-1" />
         <span className="sr-only">Shopping cart</span>
         {itemCount > 0 && (
           <motion.span 
-            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             key={itemCount}
