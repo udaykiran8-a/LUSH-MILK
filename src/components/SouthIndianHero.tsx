@@ -55,7 +55,7 @@ const SouthIndianHero: React.FC<SouthIndianHeroProps> = ({
 }) => {
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-white via-lushmilk-cream/10 to-white">
-      {/* Clean, minimal background without distracting elements */}
+      {/* Subtle background pattern without distracting elements */}
       <div 
         className="absolute inset-0 z-0 opacity-5" 
         style={{
@@ -64,9 +64,9 @@ const SouthIndianHero: React.FC<SouthIndianHeroProps> = ({
         }}
       ></div>
       
-      {/* Content */}
+      {/* Content - Removed backdrop-blur-sm */}
       <motion.div 
-        className="relative z-20 max-w-4xl mx-auto bg-white/80 backdrop-blur-sm p-10 rounded-2xl shadow-lg border border-lushmilk-cream/20"
+        className="relative z-20 max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-lg border border-lushmilk-cream/20"
         initial="initial"
         animate="animate"
         variants={fadeIn}
@@ -80,7 +80,7 @@ const SouthIndianHero: React.FC<SouthIndianHeroProps> = ({
           <img 
             src="/lovable-uploads/3907e856-b011-4bd0-8422-7830-5037d830.png" 
             alt="LushMilk Logo" 
-            className="h-24 w-24 mx-auto mb-6 drop-shadow-md"
+            className="h-32 w-32 mx-auto mb-6 drop-shadow-lg" 
           />
         </motion.div>
         

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useMotionValue, useSpring, motion } from 'framer-motion';
 
@@ -6,7 +5,7 @@ interface SparkleProps {
   x: number;
   y: number;
   color: string;
-  id: number;
+  id: string;
 }
 
 const CursorSparkle = () => {
@@ -24,31 +23,21 @@ const CursorSparkle = () => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
       
-      // Increased sparkle frequency - reduced threshold from 0.7 to 0.4
       if (Math.random() > 0.4) {
         const colors = [
-          "#FF5733", // Orange
-          "#FFC300", // Gold
-          "#36D7B7", // Turquoise
-          "#9B59B6", // Purple
-          "#FF5E8D", // Pink
-          "#3498DB", // Blue
-          "#1ABC9C", // Teal
-          "#F97316", // Bright Orange
-          "#D946EF", // Magenta Pink
-          "#8B5CF6", // Vivid Purple
-          "#0EA5E9", // Ocean Blue
+          "#FF5733", "#FFC300", "#36D7B7", "#9B59B6", "#FF5E8D", 
+          "#3498DB", "#1ABC9C", "#F97316", "#D946EF", "#8B5CF6", "#0EA5E9"
         ];
         
-        // Create multiple sparkles per movement for a more dramatic effect
         const sparkleCount = Math.floor(Math.random() * 3) + 1;
         
         for (let i = 0; i < sparkleCount; i++) {
+          const timestamp = Date.now();
           const newSparkle = {
             x: e.clientX + (Math.random() * 30 - 15),
             y: e.clientY + (Math.random() * 30 - 15),
             color: colors[Math.floor(Math.random() * colors.length)],
-            id: counter + i,
+            id: `${timestamp}-${counter + i}`,
           };
           
           setSparkles((prev) => [...prev, newSparkle]);
@@ -56,9 +45,13 @@ const CursorSparkle = () => {
         
         setCounter((prev) => prev + sparkleCount);
         
-        // Remove the sparkles after animation
         setTimeout(() => {
-          setSparkles((prev) => prev.filter((sparkle) => sparkle.id < counter));
+          setSparkles((prev) => {
+            if (prev.length > 20) {
+              return prev.slice(prev.length - 20);
+            }
+            return prev;
+          });
         }, 800);
       }
     };
@@ -72,7 +65,6 @@ const CursorSparkle = () => {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
-      {/* Enhanced rainbow cursor */}
       <motion.div
         className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[100]"
         style={{
@@ -86,7 +78,6 @@ const CursorSparkle = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white"></div>
       </motion.div>
       
-      {/* More falling sparkles with varied sizes */}
       {sparkles.map((sparkle) => (
         <motion.div
           key={sparkle.id}

@@ -2,9 +2,10 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Star, ArrowRight, Users, ShoppingCart, Calendar } from 'lucide-react';
+import { Star, ArrowRight, Users, ShoppingCart, Calendar, MapPin } from 'lucide-react';
 import SouthIndianHero from '@/components/SouthIndianHero';
 import CulturalBackground from '@/components/CulturalBackground';
+import MapComponent from '@/components/MapComponent';
 
 const Index = () => {
   return (
@@ -191,6 +192,48 @@ const Index = () => {
           </div>
         </section>
       </CulturalBackground>
+
+      {/* Map Section */}
+      <section className="section-padding bg-white">
+        <div className="container mx-auto">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-lushmilk-brown mb-4">Where We Operate</h2>
+            <p className="text-lushmilk-charcoal/80 text-lg">
+              Our farms and distribution centers are strategically located across South India to ensure the freshest dairy products reach your doorstep.
+            </p>
+          </div>
+          
+          <div className="rounded-xl overflow-hidden shadow-xl border border-lushmilk-cream/30">
+            <MapComponent className="w-full h-[500px]" />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="bg-white p-4 rounded-lg shadow-md border border-lushmilk-cream/20">
+              <div className="flex items-center gap-3 mb-2">
+                <MapPin className="text-lushmilk-terracotta" size={20} />
+                <h3 className="font-semibold text-lushmilk-brown">Bangalore</h3>
+              </div>
+              <p className="text-sm text-lushmilk-charcoal/80">Main dairy farm with over 500 cows and buffalos</p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-md border border-lushmilk-cream/20">
+              <div className="flex items-center gap-3 mb-2">
+                <MapPin className="text-lushmilk-terracotta" size={20} />
+                <h3 className="font-semibold text-lushmilk-brown">Chennai</h3>
+              </div>
+              <p className="text-sm text-lushmilk-charcoal/80">Distribution center serving Tamil Nadu region</p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg shadow-md border border-lushmilk-cream/20">
+              <div className="flex items-center gap-3 mb-2">
+                <MapPin className="text-lushmilk-terracotta" size={20} />
+                <h3 className="font-semibold text-lushmilk-brown">Hyderabad</h3>
+              </div>
+              <p className="text-sm text-lushmilk-charcoal/80">Processing facility and distribution hub</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Testimonials Section */}
       <CulturalBackground variant="rangoli">
