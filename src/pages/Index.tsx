@@ -6,25 +6,15 @@ import { Star, ArrowRight, Users, ShoppingCart, Calendar, MapPin } from 'lucide-
 import SouthIndianHero from '@/components/SouthIndianHero';
 import CulturalBackground from '@/components/CulturalBackground';
 import MapComponent from '@/components/MapComponent';
-
 const Index = () => {
-  return (
-    <Layout>
+  return <Layout>
       {/* Hero Section */}
-      <SouthIndianHero 
-        title="LushMilk – The Taste of Purity"
-        subtitle="Experience the goodness of farm-fresh milk, delivered directly to your doorstep."
-        ctaText="Order Now"
-        ctaLink="/products"
-        secondaryCtaText="Learn More"
-        secondaryCtaLink="/about"
-        backgroundImage="https://images.unsplash.com/photo-1628088062854-d1870b4553da?q=80&w=2070&auto=format&fit=crop"
-      />
+      <SouthIndianHero title="LushMilk – The Taste of Purity" subtitle="Experience the goodness of farm-fresh milk, delivered directly to your doorstep." ctaText="Order Now" ctaLink="/products" secondaryCtaText="Learn More" secondaryCtaLink="/about" backgroundImage="https://images.unsplash.com/photo-1628088062854-d1870b4553da?q=80&w=2070&auto=format&fit=crop" />
 
       {/* About Section */}
       <CulturalBackground variant="kolam">
         <section className="section-padding bg-lushmilk-offwhite">
-          <div className="container mx-auto">
+          <div className="container mx-auto bg-white/[0.31]">
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-lushmilk-brown mb-4">Our Story</h2>
               <p className="text-lushmilk-charcoal/80 text-lg">
@@ -90,11 +80,7 @@ const Index = () => {
               {/* Product Card 1 */}
               <div className="product-card">
                 <div className="h-56 bg-gray-200 relative overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                    alt="Full Cream Milk" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Full Cream Milk" className="w-full h-full object-cover" />
                   <div className="absolute top-2 right-2 bg-lushmilk-terracotta text-white px-3 py-1 rounded-full text-sm">Popular</div>
                 </div>
                 <div className="p-6">
@@ -122,11 +108,7 @@ const Index = () => {
               {/* Product Card 2 */}
               <div className="product-card">
                 <div className="h-56 bg-gray-200 relative overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                    alt="Organic Milk" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Organic Milk" className="w-full h-full object-cover" />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-serif font-semibold text-lushmilk-brown mb-2">Organic Milk</h3>
@@ -153,11 +135,7 @@ const Index = () => {
               {/* Product Card 3 */}
               <div className="product-card">
                 <div className="h-56 bg-gray-200 relative overflow-hidden">
-                  <img 
-                    src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                    alt="Buffalo Milk" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Buffalo Milk" className="w-full h-full object-cover" />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-serif font-semibold text-lushmilk-brown mb-2">Buffalo Milk</h3>
@@ -337,8 +315,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
