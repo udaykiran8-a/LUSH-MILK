@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import CartButton from './CartButton';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +14,7 @@ const NavBar = () => {
   const location = useLocation();
   const { getItemCount } = useCart();
   const itemCount = getItemCount();
+  const { user, signOut, isAuthenticated } = useAuth();
 
   // Close menu when route changes
   useEffect(() => {
@@ -57,6 +59,11 @@ const NavBar = () => {
     visible: { opacity: 1, y: 0 }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -90,16 +97,27 @@ const NavBar = () => {
           <div className="flex items-center space-x-2">
             <CartButton />
             
-            <Button 
-              variant="outline"
-              className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
-              asChild
-            >
-              <Link to="/login">
-                <User size={18} className="mr-1" />
-                Log In
-              </Link>
-            </Button>
+            {isAuthenticated ? (
+              <Button 
+                variant="outline"
+                className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                onClick={handleLogout}
+              >
+                <LogOut size={18} className="mr-1" />
+                Log Out
+              </Button>
+            ) : (
+              <Button 
+                variant="outline"
+                className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                asChild
+              >
+                <Link to="/login">
+                  <User size={18} className="mr-1" />
+                  Log In
+                </Link>
+              </Button>
+            )}
             
             <Button 
               className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
@@ -144,16 +162,27 @@ const NavBar = () => {
               <MobileNavLink to="/contact" variants={itemVariants}>Contact</MobileNavLink>
               
               <motion.div variants={itemVariants} className="pt-2 space-y-3">
-                <Button 
-                  variant="outline"
-                  className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
-                  asChild
-                >
-                  <Link to="/login" className="flex items-center justify-center">
-                    <User size={18} className="mr-2" />
-                    Log In
-                  </Link>
-                </Button>
+                {isAuthenticated ? (
+                  <Button 
+                    variant="outline"
+                    className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                    onClick={handleLogout}
+                  >
+                    <LogOut size={18} className="mr-2" />
+                    Log Out
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="outline"
+                    className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                    asChild
+                  >
+                    <Link to="/login" className="flex items-center justify-center">
+                      <User size={18} className="mr-2" />
+                      Log In
+                    </Link>
+                  </Button>
+                )}
                 
                 <Button 
                   className="w-full bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
