@@ -10,6 +10,7 @@ import { EyeIcon, EyeOffIcon, ArrowRight, Mail, Lock, Loader2 } from 'lucide-rea
 import Layout from '../components/Layout';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import SimpleCaptcha from '../components/SimpleCaptcha';
  
 const Login = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Login = () => {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -84,6 +86,11 @@ const Login = () => {
     
     if (signupPassword !== signupConfirmPassword) {
       toast.error("Passwords do not match");
+      return;
+    }
+    
+    if (!captchaVerified) {
+      toast.error("Please complete the CAPTCHA verification");
       return;
     }
     
@@ -292,11 +299,16 @@ const Login = () => {
                   />
                 </div>
                 
+                {/* Add CAPTCHA verification */}
+                <div className="pt-2">
+                  <SimpleCaptcha onVerify={setCaptchaVerified} />
+                </div>
+                
                 <div className="pt-2">
                   <Button
                     type="submit"
                     className="w-full bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white flex items-center justify-center"
-                    disabled={loading}
+                    disabled={loading || !captchaVerified}
                   >
                     {loading ? (
                       <>
