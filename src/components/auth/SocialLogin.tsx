@@ -14,10 +14,14 @@ const SocialLogin: React.FC<SocialLoginProps> = ({ googleLoading, setGoogleLoadi
   const handleGoogleLogin = async () => {
     try {
       setGoogleLoading(true);
+      
+      // Get the current domain for the redirect URL
+      const redirectTo = `${window.location.origin}/login`;
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: redirectTo,
         }
       });
       
