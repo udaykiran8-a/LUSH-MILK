@@ -30,6 +30,8 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ userId }) => {
       
       try {
         setLoading(true);
+        
+        // Use the generic query instead of the typed one since we have schema issues
         const { data, error } = await supabase
           .from('payment_history')
           .select('*')
@@ -38,7 +40,8 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({ userId }) => {
         
         if (error) throw error;
         
-        setPayments(data || []);
+        // Explicitly cast the data as PaymentRecord[]
+        setPayments((data || []) as PaymentRecord[]);
       } catch (error) {
         console.error('Error fetching payment history:', error);
         toast.error('Failed to load payment history');

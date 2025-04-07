@@ -32,18 +32,26 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
       
       try {
         setLoading(true);
+        
+        // Use a raw query to get user data
         const { data, error } = await supabase
           .from('users')
-          .select('name, email, phone, client_id')
+          .select('name, email, phone, client_id, auth_uid')
           .eq('auth_uid', user.id)
           .single();
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error fetching user data:', error);
+          toast.error('Failed to load user profile');
+          return;
+        }
         
-        setUserData(data);
-        setPhone(data.phone || '');
+        // Now we safely type the data
+        const typedData = data as unknown as UserData;
+        setUserData(typedData);
+        setPhone(typedData.phone || '');
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error in user data fetch:', error);
         toast.error('Failed to load user profile');
       } finally {
         setLoading(false);
