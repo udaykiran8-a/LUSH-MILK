@@ -293,6 +293,47 @@ export type Database = {
           },
         ]
       }
+      payment_history: {
+        Row: {
+          amount: number
+          description: string
+          id: string
+          payment_date: string | null
+          payment_method: string | null
+          status: string
+          transaction_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          description: string
+          id?: string
+          payment_date?: string | null
+          payment_method?: string | null
+          status?: string
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          description?: string
+          id?: string
+          payment_date?: string | null
+          payment_method?: string | null
+          status?: string
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number | null
@@ -408,6 +449,7 @@ export type Database = {
       users: {
         Row: {
           auth_uid: string
+          client_id: string | null
           created_at: string | null
           email: string
           id: string
@@ -417,6 +459,7 @@ export type Database = {
         }
         Insert: {
           auth_uid: string
+          client_id?: string | null
           created_at?: string | null
           email: string
           id?: string
@@ -426,6 +469,7 @@ export type Database = {
         }
         Update: {
           auth_uid?: string
+          client_id?: string | null
           created_at?: string | null
           email?: string
           id?: string

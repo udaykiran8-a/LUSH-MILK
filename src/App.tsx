@@ -12,7 +12,7 @@ import About from "./pages/About";
 import Products from "./pages/Products";
 import Contact from "./pages/Contact";
 import Cart from "./pages/Cart";
-import Login from "./pages/Login";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import Catalog from "./pages/Catalog";
 import Terms from "./pages/Terms";
@@ -32,7 +32,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
   
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/account" replace />;
 };
 
 // Create a client
@@ -55,7 +55,8 @@ const AppRoutes = () => {
       <Route path="/products" element={<Products />} />
       <Route path="/catalog" element={<Catalog />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/account" element={<Account />} />
+      <Route path="/account/*" element={<Account />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/refund-policy" element={<RefundPolicy />} />
       <Route path="/cart" element={

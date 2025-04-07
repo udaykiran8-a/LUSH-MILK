@@ -101,10 +101,12 @@ const NavBar = () => {
               <Button 
                 variant="outline"
                 className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
-                onClick={handleLogout}
+                asChild
               >
-                <LogOut size={18} className="mr-1" />
-                Log Out
+                <Link to="/account">
+                  <User size={18} className="mr-1" />
+                  Account
+                </Link>
               </Button>
             ) : (
               <Button 
@@ -112,7 +114,7 @@ const NavBar = () => {
                 className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
                 asChild
               >
-                <Link to="/login">
+                <Link to="/account">
                   <User size={18} className="mr-1" />
                   Log In
                 </Link>
@@ -163,21 +165,33 @@ const NavBar = () => {
               
               <motion.div variants={itemVariants} className="pt-2 space-y-3">
                 {isAuthenticated ? (
-                  <Button 
-                    variant="outline"
-                    className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
-                    onClick={handleLogout}
-                  >
-                    <LogOut size={18} className="mr-2" />
-                    Log Out
-                  </Button>
+                  <>
+                    <Button 
+                      variant="outline"
+                      className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                      asChild
+                    >
+                      <Link to="/account" className="flex items-center justify-center">
+                        <User size={18} className="mr-2" />
+                        Account
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
+                      onClick={handleLogout}
+                    >
+                      <LogOut size={18} className="mr-2" />
+                      Log Out
+                    </Button>
+                  </>
                 ) : (
                   <Button 
                     variant="outline"
                     className="w-full border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta/10"
                     asChild
                   >
-                    <Link to="/login" className="flex items-center justify-center">
+                    <Link to="/account" className="flex items-center justify-center">
                       <User size={18} className="mr-2" />
                       Log In
                     </Link>
