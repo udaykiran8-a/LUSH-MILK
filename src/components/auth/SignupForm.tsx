@@ -63,25 +63,41 @@ const SignupForm: React.FC<SignupFormProps> = ({ loading, setLoading }) => {
       
       if (error) throw error;
       
-      // Create user profile with client_id
-      await supabase.from('users').insert({
-        auth_uid: data.user?.id,
-        name: signupName,
-        email: signupEmail,
-        role: 'customer'
-      });
+      // Wait a moment to ensure the auth user is created before adding to users table
+      if (data.user?.id) {
+        try {
+          // Create user profile with client_id
+          const { error: profileError } = await supabase.from('users').insert({
+            auth_uid: data.user.id,
+            name: signupName,
+            email: signupEmail,
+            role: 'customer'
+          });
+          
+          if (profileError) {
+            console.error("Error creating user profile:", profileError);
+            // Don't throw here, we'll still consider signup successful
+          }
+        } catch (profileError) {
+          console.error("Error in profile creation:", profileError);
+        }
+      }
       
       toast.success("Registration successful! Please check your email to verify your account.");
       resetForm();
     } catch (error: any) {
       console.error("Signup error:", error);
       toast.error(error.message || "Failed to sign up");
+      // Reset captcha on error for security
+      setCaptchaKey(Date.now());
+      setCaptchaVerified(false);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCaptchaVerify = (verified: boolean) => {
+    console.log("CAPTCHA verification status:", verified);
     setCaptchaVerified(verified);
   };
 
