@@ -29,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   
   const handleAddToCart = () => {
     addToCart({
-      id: product.id.toString(),
+      id: product.id, // Changed from string to number
       name: product.name,
       price: product.price,
       image: product.image,

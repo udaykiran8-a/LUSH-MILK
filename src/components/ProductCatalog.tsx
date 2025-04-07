@@ -134,7 +134,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
   
   const handleAddToCart = (product: MilkProduct, size: string, price: number) => {
     addToCart({
-      id: `${product.id}-${size}`,
+      id: `${product.id}-${size}`, // Already a string, which is now allowed by CartContext
       name: `${product.type} Milk (${size})`,
       price: price,
       image: product.image,
@@ -149,7 +149,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
 
   const handleAddSubscription = (product: MilkProduct, quantity: string, price: number) => {
     addToCart({
-      id: `${product.id}-subscription-${quantity}`,
+      id: `${product.id}-subscription-${quantity}`, // Already a string, which is now allowed by CartContext
       name: `${product.type} Milk Monthly Subscription (${quantity})`,
       price: price,
       image: product.image,

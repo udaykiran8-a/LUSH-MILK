@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 interface CartItem {
-  id: string;
+  id: string | number;
   name: string;
   price: number;
   image?: string;

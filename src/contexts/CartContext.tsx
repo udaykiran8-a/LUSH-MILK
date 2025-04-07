@@ -2,18 +2,19 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 export type CartItem = {
-  id: number;
+  id: number | string; // Updated to accept both number and string IDs
   name: string;
   price: number;
   quantity: number;
   image: string;
+  isSubscription?: boolean;
 };
 
 type CartContextType = {
   items: CartItem[];
   addToCart: (item: Omit<CartItem, 'quantity'>) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  removeFromCart: (id: number | string) => void; // Updated parameter type
+  updateQuantity: (id: number | string, quantity: number) => void; // Updated parameter type
   clearCart: () => void;
   getCartTotal: () => number;
   getItemCount: () => number;
@@ -43,11 +44,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const removeFromCart = (id: number) => {
+  const removeFromCart = (id: number | string) => { // Updated parameter type
     setItems(prevItems => prevItems.filter(item => item.id !== id));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: number | string, quantity: number) => { // Updated parameter type
     if (quantity <= 0) {
       removeFromCart(id);
       return;
