@@ -46,6 +46,23 @@ const SimpleCaptcha: React.FC<SimpleCaptchaProps> = ({ onVerify }) => {
     }
   };
 
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInput(e.target.value);
+    // Reset error state when user starts typing again
+    if (error) {
+      setError(false);
+    }
+  };
+
+  // Handle key press for better UX
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && userInput.length > 0 && !verified) {
+      e.preventDefault();
+      verifyInput();
+    }
+  };
+
   return (
     <div className="w-full space-y-2">
       <div className="text-sm font-medium">Verification</div>
@@ -78,8 +95,10 @@ const SimpleCaptcha: React.FC<SimpleCaptchaProps> = ({ onVerify }) => {
             className={`flex-1 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 text-sm`}
             placeholder="Enter the text above"
             value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
             disabled={verified}
+            aria-invalid={error}
           />
           <Button 
             type="button"

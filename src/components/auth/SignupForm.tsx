@@ -20,6 +20,16 @@ const SignupForm: React.FC<SignupFormProps> = ({ loading, setLoading }) => {
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaKey, setCaptchaKey] = useState(Date.now()); // Use timestamp as key to force re-render
+
+  const resetForm = () => {
+    setSignupName('');
+    setSignupEmail('');
+    setSignupPassword('');
+    setSignupConfirmPassword('');
+    setCaptchaVerified(false);
+    setCaptchaKey(Date.now()); // Reset captcha
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,13 +63,26 @@ const SignupForm: React.FC<SignupFormProps> = ({ loading, setLoading }) => {
       
       if (error) throw error;
       
+      // Create user profile with client_id
+      await supabase.from('users').insert({
+        auth_uid: data.user?.id,
+        name: signupName,
+        email: signupEmail,
+        role: 'customer'
+      });
+      
       toast.success("Registration successful! Please check your email to verify your account.");
+      resetForm();
     } catch (error: any) {
       console.error("Signup error:", error);
       toast.error(error.message || "Failed to sign up");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCaptchaVerify = (verified: boolean) => {
+    setCaptchaVerified(verified);
   };
 
   return (
@@ -127,7 +150,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ loading, setLoading }) => {
       </div>
       
       <div className="pt-2">
-        <SimpleCaptcha onVerify={setCaptchaVerified} />
+        <SimpleCaptcha key={captchaKey} onVerify={handleCaptchaVerify} />
       </div>
       
       <div className="pt-2">
