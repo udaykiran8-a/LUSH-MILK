@@ -139,20 +139,20 @@ export type Database = {
         Row: {
           delivery_time: string | null
           id: string
-          order_id: string | null
-          status: string | null
+          order_id: string
+          status: string
         }
         Insert: {
           delivery_time?: string | null
           id?: string
-          order_id?: string | null
-          status?: string | null
+          order_id: string
+          status?: string
         }
         Update: {
           delivery_time?: string | null
           id?: string
-          order_id?: string | null
-          status?: string | null
+          order_id?: string
+          status?: string
         }
         Relationships: [
           {
@@ -200,7 +200,7 @@ export type Database = {
         Row: {
           collection_date: string | null
           created_at: string | null
-          farmer_id: string | null
+          farmer_id: string
           fat_percentage: number | null
           id: string
           price_per_liter: number | null
@@ -212,7 +212,7 @@ export type Database = {
         Insert: {
           collection_date?: string | null
           created_at?: string | null
-          farmer_id?: string | null
+          farmer_id: string
           fat_percentage?: number | null
           id?: string
           price_per_liter?: number | null
@@ -224,7 +224,7 @@ export type Database = {
         Update: {
           collection_date?: string | null
           created_at?: string | null
-          farmer_id?: string | null
+          farmer_id?: string
           fat_percentage?: number | null
           id?: string
           price_per_liter?: number | null
@@ -247,40 +247,40 @@ export type Database = {
         Row: {
           cancelled_reason: string | null
           created_at: string | null
-          customer_id: string | null
+          customer_id: string
           delivered_at: string | null
           delivery_person: string | null
           fat_percentage: number | null
           id: string
           milk_type: string | null
           snf_percentage: number | null
-          status: string | null
+          status: string
           vehicle: string | null
         }
         Insert: {
           cancelled_reason?: string | null
           created_at?: string | null
-          customer_id?: string | null
+          customer_id: string
           delivered_at?: string | null
           delivery_person?: string | null
           fat_percentage?: number | null
           id?: string
           milk_type?: string | null
           snf_percentage?: number | null
-          status?: string | null
+          status?: string
           vehicle?: string | null
         }
         Update: {
           cancelled_reason?: string | null
           created_at?: string | null
-          customer_id?: string | null
+          customer_id?: string
           delivered_at?: string | null
           delivery_person?: string | null
           fat_percentage?: number | null
           id?: string
           milk_type?: string | null
           snf_percentage?: number | null
-          status?: string | null
+          status?: string
           vehicle?: string | null
         }
         Relationships: [

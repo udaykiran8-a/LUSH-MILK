@@ -6,6 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+  isSubscription?: boolean;
+}
+
 const CartButton = () => {
   const { getItemCount } = useCart();
   const itemCount = getItemCount();

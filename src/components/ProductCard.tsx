@@ -16,6 +16,7 @@ export interface Product {
   rating: number;
   category: string;
   popular?: boolean;
+  priceInRupees?: number; // Add option to display price in Rupees
 }
 
 interface ProductCardProps {
@@ -28,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   
   const handleAddToCart = () => {
     addToCart({
-      id: product.id,
+      id: product.id.toString(),
       name: product.name,
       price: product.price,
       image: product.image,
@@ -40,6 +41,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
       duration: 2000,
     });
   };
+
+  // Calculate price to display (either in $ or ₹)
+  const displayPrice = product.priceInRupees || (product.price * 70);
 
   return (
     <motion.div
@@ -96,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
         
         <div className="flex items-center justify-between mt-auto">
           <span className="text-lushmilk-terracotta font-semibold">
-            ₹{product.price * 70} <span className="text-xs text-gray-500">/liter</span>
+            ₹{displayPrice} <span className="text-xs text-gray-500">/liter</span>
           </span>
           
           <motion.div
