@@ -37,7 +37,7 @@ const Footer = () => {
               <li><Link to="/about" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">About Us</Link></li>
               <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Products</Link></li>
               <li><Link to="/contact" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Contact</Link></li>
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Blog</a></li>
+              <li><Link to="/catalog" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Catalog</Link></li>
             </ul>
           </div>
 
@@ -45,11 +45,11 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-xl font-semibold mb-4 text-lushmilk-brown">Our Products</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Full Cream Milk</a></li>
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Toned Milk</a></li>
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Organic Milk</a></li>
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Buffalo Milk</a></li>
-              <li><a href="#" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Cow Milk</a></li>
+              <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Farm Fresh Milk</Link></li>
+              <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Toned Milk</Link></li>
+              <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Organic Milk</Link></li>
+              <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Low Fat Milk</Link></li>
+              <li><Link to="/products" className="text-lushmilk-charcoal/80 hover:text-lushmilk-terracotta transition-colors">Buffalo Milk</Link></li>
             </ul>
           </div>
 
@@ -86,9 +86,9 @@ const Footer = () => {
         <div className="pt-8 border-t border-lushmilk-cream/50 text-center text-lushmilk-charcoal/70 text-sm">
           <p>&copy; {new Date().getFullYear()} LushMilk. All rights reserved.</p>
           <div className="mt-2 space-x-4">
-            <a href="#" className="hover:text-lushmilk-terracotta transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-lushmilk-terracotta transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-lushmilk-terracotta transition-colors">Refund Policy</a>
+            <Link to="/terms" className="hover:text-lushmilk-terracotta transition-colors">Terms & Conditions</Link>
+            <Link to="/terms" className="hover:text-lushmilk-terracotta transition-colors">Privacy Policy</Link>
+            <Link to="/refund-policy" className="hover:text-lushmilk-terracotta transition-colors">Refund Policy</Link>
           </div>
         </div>
       </div>

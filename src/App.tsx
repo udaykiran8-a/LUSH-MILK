@@ -15,10 +15,13 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Catalog from "./pages/Catalog";
+import Terms from "./pages/Terms";
+import RefundPolicy from "./pages/RefundPolicy";
 
 // Components
 import ClickAnimation from "./components/ClickAnimation";
 import CursorSparkle from "./components/CursorSparkle";
+import CookieConsent from "./components/CookieConsent";
 import { useAuth } from "./hooks/useAuth";
 
 // Protected Route component
@@ -53,6 +56,8 @@ const AppRoutes = () => {
       <Route path="/catalog" element={<Catalog />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
       <Route path="/cart" element={
         <ProtectedRoute>
           <Cart />
@@ -73,6 +78,7 @@ const App = () => {
             <CursorSparkle />
             <Toaster position="top-right" richColors closeButton />
             <AppRoutes />
+            <CookieConsent />
           </TooltipProvider>
         </BrowserRouter>
       </CartProvider>

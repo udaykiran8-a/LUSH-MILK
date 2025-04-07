@@ -95,8 +95,8 @@ const Index = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-lushmilk-terracotta font-medium">From ₹60 / liter</span>
-                  <Button variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
-                    View
+                  <Button asChild variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
+                    <Link to="/products">View</Link>
                   </Button>
                 </div>
               </div>
@@ -122,8 +122,8 @@ const Index = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-lushmilk-terracotta font-medium">From ₹80 / liter</span>
-                  <Button variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
-                    View
+                  <Button asChild variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
+                    <Link to="/products">View</Link>
                   </Button>
                 </div>
               </div>
@@ -149,8 +149,8 @@ const Index = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-lushmilk-terracotta font-medium">From ₹70 / liter</span>
-                  <Button variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
-                    View
+                  <Button asChild variant="outline" className="border-lushmilk-terracotta text-lushmilk-terracotta hover:bg-lushmilk-terracotta hover:text-white">
+                    <Link to="/products">View</Link>
                   </Button>
                 </div>
               </div>
