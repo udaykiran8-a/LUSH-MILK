@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, Check, X } from 'lucide-react';
+import { Button } from './ui/button';
+import { Shuffle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface SimpleCaptchaProps {
   onVerify: (verified: boolean) => void;
@@ -10,122 +11,145 @@ interface SimpleCaptchaProps {
 const SimpleCaptcha: React.FC<SimpleCaptchaProps> = ({ onVerify }) => {
   const [captchaText, setCaptchaText] = useState('');
   const [userInput, setUserInput] = useState('');
-  const [verified, setVerified] = useState(false);
-  const [error, setError] = useState(false);
-
-  // Generate random text for CAPTCHA
-  const generateCaptcha = () => {
-    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
+  
+  // Generate a random string for captcha
+  const generateCaptchaText = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     let result = '';
     for (let i = 0; i < 6; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setCaptchaText(result);
+    return result;
+  };
+
+  // Draw the captcha on canvas
+  const drawCaptcha = (text: string) => {
+    if (!canvasRef) return;
+    
+    const ctx = canvasRef.getContext('2d');
+    if (!ctx) return;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+    
+    // Fill background
+    ctx.fillStyle = '#f8f8f8';
+    ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+    
+    // Add noise (dots)
+    for (let i = 0; i < 100; i++) {
+      ctx.fillStyle = `rgba(${Math.random() * 100}, ${Math.random() * 100}, ${Math.random() * 100}, 0.3)`;
+      ctx.beginPath();
+      ctx.arc(
+        Math.random() * canvasRef.width,
+        Math.random() * canvasRef.height,
+        Math.random() * 2,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+    
+    // Add noise (lines)
+    for (let i = 0; i < 10; i++) {
+      ctx.strokeStyle = `rgba(${Math.random() * 100}, ${Math.random() * 100}, ${Math.random() * 100}, 0.3)`;
+      ctx.beginPath();
+      ctx.moveTo(Math.random() * canvasRef.width, Math.random() * canvasRef.height);
+      ctx.lineTo(Math.random() * canvasRef.width, Math.random() * canvasRef.height);
+      ctx.stroke();
+    }
+    
+    // Draw captcha text
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillStyle = '#333';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    
+    // Draw each character with slight variations
+    for (let i = 0; i < text.length; i++) {
+      const x = 20 + i * 25;
+      const y = canvasRef.height / 2 + (Math.random() * 10 - 5);
+      const rotation = (Math.random() * 0.4) - 0.2; // Small rotation between -0.2 and 0.2 radians
+      
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.fillText(text[i], 0, 0);
+      ctx.restore();
+    }
+  };
+
+  // Initialize captcha
+  const refreshCaptcha = () => {
+    const newCaptcha = generateCaptchaText();
+    setCaptchaText(newCaptcha);
     setUserInput('');
-    setError(false);
-    setVerified(false);
+    // Reset verification state
     onVerify(false);
   };
 
-  // Initialize CAPTCHA on component mount
+  // Verify user input against captcha
+  const verifyCaptcha = () => {
+    if (userInput.trim() === captchaText) {
+      onVerify(true);
+      toast.success('CAPTCHA verified successfully!');
+      return true;
+    } else {
+      onVerify(false);
+      toast.error('CAPTCHA verification failed. Please try again.');
+      refreshCaptcha();
+      return false;
+    }
+  };
+
+  // Set up canvas ref and initial captcha
   useEffect(() => {
-    generateCaptcha();
+    refreshCaptcha();
   }, []);
 
-  // Verify user input against CAPTCHA
-  const verifyInput = () => {
-    if (userInput === captchaText) {
-      setVerified(true);
-      setError(false);
-      onVerify(true);
-    } else {
-      setError(true);
-      onVerify(false);
-      // Generate new CAPTCHA after failed attempt
-      setTimeout(generateCaptcha, 1000);
+  // Draw captcha whenever text changes or canvas is set
+  useEffect(() => {
+    if (captchaText && canvasRef) {
+      drawCaptcha(captchaText);
     }
-  };
-
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInput(e.target.value);
-    // Reset error state when user starts typing again
-    if (error) {
-      setError(false);
-    }
-  };
-
-  // Handle key press for better UX
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && userInput.length > 0 && !verified) {
-      e.preventDefault();
-      verifyInput();
-    }
-  };
+  }, [captchaText, canvasRef]);
 
   return (
-    <div className="w-full space-y-2">
-      <div className="text-sm font-medium">Verification</div>
-      <div className="flex flex-col space-y-3">
-        <div 
-          className="bg-gray-100 p-3 rounded-md text-center relative select-none font-mono tracking-wider"
-          style={{ 
-            background: 'linear-gradient(45deg, #f3f4f6 25%, #e5e7eb 25%, #e5e7eb 50%, #f3f4f6 50%, #f3f4f6 75%, #e5e7eb 75%, #e5e7eb 100%)',
-            backgroundSize: '8px 8px',
-            letterSpacing: '0.2em',
-            textShadow: '1px 1px 1px rgba(255,255,255,0.8)'
-          }}
+    <div className="flex flex-col space-y-3 w-full">
+      <div className="flex items-center">
+        <canvas
+          ref={setCanvasRef}
+          width={200}
+          height={60}
+          className="border border-gray-200 rounded-md"
+        />
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon" 
+          className="ml-2" 
+          onClick={refreshCaptcha}
         >
-          {captchaText}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0" 
-            onClick={generateCaptcha}
-            type="button"
-          >
-            <RefreshCw className="h-4 w-4" />
-            <span className="sr-only">Refresh CAPTCHA</span>
-          </Button>
-        </div>
-        
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className={`flex-1 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 text-sm`}
-            placeholder="Enter the text above"
-            value={userInput}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            disabled={verified}
-            aria-invalid={error}
-          />
-          <Button 
-            type="button"
-            onClick={verifyInput}
-            disabled={userInput.length === 0 || verified}
-            className="w-24"
-          >
-            {verified ? (
-              <>
-                <Check className="mr-1 h-4 w-4" /> Verified
-              </>
-            ) : (
-              'Verify'
-            )}
-          </Button>
-        </div>
-        
-        {error && (
-          <div className="text-red-500 text-sm flex items-center">
-            <X className="mr-1 h-4 w-4" /> Incorrect verification code. Try again.
-          </div>
-        )}
-        {verified && (
-          <div className="text-green-500 text-sm flex items-center">
-            <Check className="mr-1 h-4 w-4" /> Verification successful!
-          </div>
-        )}
+          <Shuffle className="h-4 w-4" />
+        </Button>
+      </div>
+      
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lushmilk-terracotta focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Enter the text above"
+        />
+        <Button 
+          type="button" 
+          onClick={verifyCaptcha}
+          className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
+        >
+          Verify
+        </Button>
       </div>
     </div>
   );

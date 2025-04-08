@@ -66,7 +66,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ loading, setLoading }) => {
       // Wait a moment to ensure the auth user is created before adding to users table
       if (data.user?.id) {
         try {
-          // Create user profile with client_id
+          // Create user profile in users table
           const { error: profileError } = await supabase.from('users').insert({
             auth_uid: data.user.id,
             name: signupName,
