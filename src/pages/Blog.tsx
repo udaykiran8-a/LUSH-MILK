@@ -42,7 +42,7 @@ const blogPosts = [
   {
     id: 'milk-for-children',
     title: 'Choosing the Right Milk for Your Children',
-    summary: 'A guide for parents on selecting the best milk variety based on children's age, dietary needs, and health considerations.',
+    summary: "A guide for parents on selecting the best milk variety based on children's age, dietary needs, and health considerations.",
     date: 'March 20, 2025',
     readTime: '6 min read',
     category: 'Parenting',
