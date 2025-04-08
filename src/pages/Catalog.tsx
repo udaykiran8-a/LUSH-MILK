@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import Layout from '@/components/Layout';
 import ProductCatalog from '@/components/ProductCatalog';
+import ProductFeatures from '@/components/catalog/ProductFeatures';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Calendar, Truck, Info, DollarSign } from 'lucide-react';
+import { Package, Calendar, Truck, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {
@@ -19,7 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from '@/components/ui/badge';
 
 const Catalog = () => {
   return (
@@ -27,13 +28,13 @@ const Catalog = () => {
       <div className="min-h-screen bg-gradient-to-b from-white via-lushmilk-cream/5 to-white py-16">
         <div className="container mx-auto px-4">
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-12"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl font-serif font-bold text-lushmilk-richbrown mb-4 relative inline-block">
-              Premium Milk Catalog
+              Premium Milk Collection
               <motion.div 
                 className="absolute w-full h-1 bg-lushmilk-terracotta bottom-0 left-0 rounded-full"
                 initial={{ width: 0 }}
@@ -46,7 +47,7 @@ const Catalog = () => {
             </p>
           </motion.div>
           
-          <div className="mb-12 bg-white rounded-lg shadow-md p-8 border border-lushmilk-cream/30">
+          <div className="mb-12 bg-white rounded-lg shadow-sm p-8 border border-lushmilk-cream/30">
             <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-6 text-center">
               What Makes Our Milk Special
             </h2>
@@ -112,10 +113,10 @@ const Catalog = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl font-serif text-lushmilk-brown flex items-center">
                   <DollarSign className="h-5 w-5 mr-2 text-lushmilk-terracotta" />
-                  Pricing Information
+                  Simple Pricing
                 </CardTitle>
                 <CardDescription>
-                  Compare our pricing across different package sizes
+                  Transparent pricing for all our premium milk products
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -139,7 +140,7 @@ const Catalog = () => {
                           <tbody>
                             {/* Farm Fresh */}
                             <tr>
-                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Farm Fresh<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">3.5% Fat, 8.5% SNF</Badge></td>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Farm Fresh</td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹25</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹100/L</td>
@@ -155,12 +156,12 @@ const Catalog = () => {
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹85</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹85/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹81 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹81/L daily</td>
                             </tr>
                             
                             {/* Low Fat */}
                             <tr>
-                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Low Fat<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">1.5% Fat, 9.0% SNF</Badge></td>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Low Fat</td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹20</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹80/L</td>
@@ -176,12 +177,12 @@ const Catalog = () => {
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹70</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹70/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹67 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹67/L daily</td>
                             </tr>
                             
-                            {/* Toned Milk */}
+                            {/* Full Cream */}
                             <tr>
-                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Full Cream<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">6.0% Fat, 9.0% SNF</Badge></td>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Full Cream</td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹30</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹120/L</td>
@@ -197,27 +198,22 @@ const Catalog = () => {
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹105</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹105/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹100 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹100/L daily</td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
-                      <div className="mt-4 text-sm text-lushmilk-charcoal/80">
-                        <p className="flex items-center mb-2">
-                          <Info className="h-4 w-4 mr-2 text-lushmilk-terracotta" />
-                          Monthly subscriptions receive a 5% discount on the regular price
-                        </p>
-                        <p className="flex items-center">
-                          <Info className="h-4 w-4 mr-2 text-lushmilk-terracotta" />
-                          Price per liter is calculated based on the package size
-                        </p>
-                      </div>
+                      <p className="mt-4 text-sm text-center text-lushmilk-charcoal/80">
+                        Monthly subscriptions receive a 5% discount on the regular price
+                      </p>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </CardContent>
             </Card>
           </motion.div>
+          
+          <ProductFeatures />
           
           <Tabs defaultValue="regular" className="mb-16">
             <TabsList className="w-full max-w-md mx-auto mb-8 bg-lushmilk-cream/20">
@@ -245,29 +241,6 @@ const Catalog = () => {
           </Tabs>
           
           <motion.div 
-            className="mb-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-4">
-              Learn More About Our Milk Types
-            </h2>
-            <p className="text-lushmilk-brown text-lg mb-6 max-w-2xl mx-auto">
-              Discover the unique properties and benefits of our different milk varieties
-            </p>
-            <Button 
-              asChild
-              className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
-            >
-              <Link to="/milk-types" className="flex items-center gap-2">
-                Explore Our Milk Types
-              </Link>
-            </Button>
-          </motion.div>
-          
-          <motion.div 
             className="mt-16 p-8 bg-lushmilk-cream/20 rounded-lg shadow-sm border border-lushmilk-cream/30 text-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -286,7 +259,7 @@ const Catalog = () => {
               className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
             >
               <Link to="/cart" className="flex items-center gap-2">
-                Get Started
+                Start Your Order
               </Link>
             </Button>
           </motion.div>
