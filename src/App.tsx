@@ -17,6 +17,8 @@ import NotFound from "./pages/NotFound";
 import Catalog from "./pages/Catalog";
 import Terms from "./pages/Terms";
 import RefundPolicy from "./pages/RefundPolicy";
+import MilkTypes from "./pages/MilkTypes";
+import Blog from "./pages/Blog";
 
 // Components
 import ClickAnimation from "./components/ClickAnimation";
@@ -59,6 +61,9 @@ const AppRoutes = () => {
       <Route path="/account/*" element={<Account />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/milk-types" element={<MilkTypes />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:id" element={<Blog />} />
       <Route path="/cart" element={
         <ProtectedRoute>
           <Cart />

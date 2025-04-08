@@ -4,9 +4,23 @@ import Layout from '@/components/Layout';
 import ProductCatalog from '@/components/ProductCatalog';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Calendar, Truck } from 'lucide-react';
+import { Package, Calendar, Truck, Info, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from '@/components/ui/badge';
 
 const Catalog = () => {
   const [region, setRegion] = useState<'default' | 'chennai'>('default');
@@ -90,6 +104,134 @@ const Catalog = () => {
               </motion.div>
             </div>
           </div>
+
+          {/* Added Pricing Comparison Section */}
+          <motion.div 
+            className="mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Card className="border border-lushmilk-cream/30">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl font-serif text-lushmilk-brown flex items-center">
+                  <DollarSign className="h-5 w-5 mr-2 text-lushmilk-terracotta" />
+                  Pricing Information
+                </CardTitle>
+                <CardDescription>
+                  Compare our pricing across different regions and package sizes
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="pricing">
+                    <AccordionTrigger className="text-lushmilk-brown font-medium">
+                      View Detailed Price Comparison
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="overflow-x-auto">
+                        <table className="w-full border-collapse">
+                          <thead className="bg-lushmilk-cream/20">
+                            <tr>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Milk Type</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Size</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Default Price</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Chennai Price</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Price per Liter</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Subscription (5% off)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {/* Farm Fresh */}
+                            <tr>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Farm Fresh<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">3.5% Fat, 8.5% SNF</Badge></td>
+                              <td className="p-3 border border-lushmilk-cream/30">250ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹25</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹100/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">500ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹45</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹50</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹90/L - ₹100/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">1L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹85</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹90</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹85/L - ₹90/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹81 - ₹86 per day</td>
+                            </tr>
+                            
+                            {/* Low Fat */}
+                            <tr>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Low Fat<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">1.5% Fat, 9.0% SNF</Badge></td>
+                              <td className="p-3 border border-lushmilk-cream/30">250ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹20</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹80/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">500ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹38</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹45</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹76/L - ₹90/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">1L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹70</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹75</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹70/L - ₹75/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹67 - ₹71 per day</td>
+                            </tr>
+                            
+                            {/* Toned Milk */}
+                            <tr>
+                              <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Full Cream<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">6.0% Fat, 9.0% SNF</Badge></td>
+                              <td className="p-3 border border-lushmilk-cream/30">250ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹30</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹120/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">500ml</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹55</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹65</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹110/L - ₹130/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 border border-lushmilk-cream/30">1L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹105</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹120</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹105/L - ₹120/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹100 - ₹114 per day</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="mt-4 text-sm text-lushmilk-charcoal/80">
+                        <p className="flex items-center mb-2">
+                          <Info className="h-4 w-4 mr-2 text-lushmilk-terracotta" />
+                          Monthly subscriptions receive a 5% discount on the regular price
+                        </p>
+                        <p className="flex items-center">
+                          <Info className="h-4 w-4 mr-2 text-lushmilk-terracotta" />
+                          Price per liter is calculated based on the package size
+                        </p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </motion.div>
           
           <div className="mb-8 flex justify-center">
             <div className="bg-white rounded-lg inline-flex p-1 border border-lushmilk-cream/30 shadow-sm">
@@ -134,6 +276,30 @@ const Catalog = () => {
               <ProductCatalog region={region} purchaseType="subscription" />
             </TabsContent>
           </Tabs>
+          
+          {/* Learn More About Our Milk Types Section */}
+          <motion.div 
+            className="mb-16 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <h2 className="text-2xl font-serif font-semibold text-lushmilk-brown mb-4">
+              Learn More About Our Milk Types
+            </h2>
+            <p className="text-lushmilk-brown text-lg mb-6 max-w-2xl mx-auto">
+              Discover the unique properties and benefits of our different milk varieties
+            </p>
+            <Button 
+              asChild
+              className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white"
+            >
+              <Link to="/milk-types" className="flex items-center gap-2">
+                Explore Our Milk Types
+              </Link>
+            </Button>
+          </motion.div>
           
           <motion.div 
             className="mt-16 p-8 bg-lushmilk-cream/20 rounded-lg shadow-sm border border-lushmilk-cream/30 text-center"
