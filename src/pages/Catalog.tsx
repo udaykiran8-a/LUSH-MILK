@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import ProductCatalog from '@/components/ProductCatalog';
@@ -23,8 +22,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const Catalog = () => {
-  const [region, setRegion] = useState<'default' | 'chennai'>('default');
-  
   return (
     <Layout>
       <div className="min-h-screen bg-gradient-to-b from-white via-lushmilk-cream/5 to-white py-16">
@@ -105,7 +102,6 @@ const Catalog = () => {
             </div>
           </div>
 
-          {/* Added Pricing Comparison Section */}
           <motion.div 
             className="mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -119,7 +115,7 @@ const Catalog = () => {
                   Pricing Information
                 </CardTitle>
                 <CardDescription>
-                  Compare our pricing across different regions and package sizes
+                  Compare our pricing across different package sizes
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -135,8 +131,7 @@ const Catalog = () => {
                             <tr>
                               <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Milk Type</th>
                               <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Size</th>
-                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Default Price</th>
-                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Chennai Price</th>
+                              <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Price</th>
                               <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Price per Liter</th>
                               <th className="p-3 border border-lushmilk-cream/30 text-left text-lushmilk-brown">Subscription (5% off)</th>
                             </tr>
@@ -147,23 +142,20 @@ const Catalog = () => {
                               <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Farm Fresh<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">3.5% Fat, 8.5% SNF</Badge></td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹25</td>
-                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹100/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">500ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹45</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹50</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹90/L - ₹100/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹90/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹85</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹90</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹85/L - ₹90/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹81 - ₹86 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹85/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹81 per day</td>
                             </tr>
                             
                             {/* Low Fat */}
@@ -171,23 +163,20 @@ const Catalog = () => {
                               <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Low Fat<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">1.5% Fat, 9.0% SNF</Badge></td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹20</td>
-                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹80/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">500ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹38</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹45</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹76/L - ₹90/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹76/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹70</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹75</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹70/L - ₹75/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹67 - ₹71 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹70/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹67 per day</td>
                             </tr>
                             
                             {/* Toned Milk */}
@@ -195,23 +184,20 @@ const Catalog = () => {
                               <td rowSpan={3} className="p-3 border border-lushmilk-cream/30 font-medium">Full Cream<br/><Badge className="bg-lushmilk-cream/40 text-lushmilk-brown border-lushmilk-cream">6.0% Fat, 9.0% SNF</Badge></td>
                               <td className="p-3 border border-lushmilk-cream/30">250ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹30</td>
-                              <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹120/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">500ml</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹55</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹65</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹110/L - ₹130/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹110/L</td>
                               <td className="p-3 border border-lushmilk-cream/30">N/A</td>
                             </tr>
                             <tr>
                               <td className="p-3 border border-lushmilk-cream/30">1L</td>
                               <td className="p-3 border border-lushmilk-cream/30">₹105</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹120</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹105/L - ₹120/L</td>
-                              <td className="p-3 border border-lushmilk-cream/30">₹100 - ₹114 per day</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹105/L</td>
+                              <td className="p-3 border border-lushmilk-cream/30">₹100 per day</td>
                             </tr>
                           </tbody>
                         </table>
@@ -233,25 +219,6 @@ const Catalog = () => {
             </Card>
           </motion.div>
           
-          <div className="mb-8 flex justify-center">
-            <div className="bg-white rounded-lg inline-flex p-1 border border-lushmilk-cream/30 shadow-sm">
-              <Button 
-                variant={region === 'default' ? 'default' : 'ghost'}
-                className={region === 'default' ? 'bg-lushmilk-terracotta' : ''}
-                onClick={() => setRegion('default')}
-              >
-                Standard Pricing
-              </Button>
-              <Button 
-                variant={region === 'chennai' ? 'default' : 'ghost'}
-                className={region === 'chennai' ? 'bg-lushmilk-terracotta' : ''}
-                onClick={() => setRegion('chennai')}
-              >
-                Chennai Pricing
-              </Button>
-            </div>
-          </div>
-          
           <Tabs defaultValue="regular" className="mb-16">
             <TabsList className="w-full max-w-md mx-auto mb-8 bg-lushmilk-cream/20">
               <TabsTrigger 
@@ -269,15 +236,14 @@ const Catalog = () => {
             </TabsList>
             
             <TabsContent value="regular" className="focus-visible:outline-none focus-visible:ring-0">
-              <ProductCatalog region={region} purchaseType="regular" />
+              <ProductCatalog region="default" purchaseType="regular" />
             </TabsContent>
             
             <TabsContent value="subscription" className="focus-visible:outline-none focus-visible:ring-0">
-              <ProductCatalog region={region} purchaseType="subscription" />
+              <ProductCatalog region="default" purchaseType="subscription" />
             </TabsContent>
           </Tabs>
           
-          {/* Learn More About Our Milk Types Section */}
           <motion.div 
             className="mb-16 text-center"
             initial={{ opacity: 0, y: 20 }}

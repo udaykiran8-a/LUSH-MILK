@@ -19,12 +19,9 @@ interface MilkProduct {
   image: string;
   popular?: boolean;
   pricing: {
+    // Remove chennai from pricing structure
     default: {
       '250ml'?: number;
-      '500ml'?: number;
-      '1L'?: number;
-    };
-    chennai?: {
       '500ml'?: number;
       '1L'?: number;
     };
@@ -55,13 +52,9 @@ const milkProducts: MilkProduct[] = [
         '500ml': 45,
         '1L': 85
       },
-      chennai: {
-        '500ml': 50,
-        '1L': 90
-      },
       subscription: {
-        monthly1L: 2565, // ₹90 x 30 - 5%
-        monthly2L: 5130  // ₹90 x 60 - 5%
+        monthly1L: 2565, // ₹85 x 30 - 5%
+        monthly2L: 5130  // ₹85 x 60 - 5%
       }
     }
   },
@@ -83,13 +76,9 @@ const milkProducts: MilkProduct[] = [
         '500ml': 38,
         '1L': 70
       },
-      chennai: {
-        '500ml': 45,
-        '1L': 75
-      },
       subscription: {
-        monthly1L: 2137.50, // ₹75 x 30 - 5%
-        monthly2L: 4275     // ₹75 x 60 - 5%
+        monthly1L: 1995, // ₹70 x 30 - 5%
+        monthly2L: 3990  // ₹70 x 60 - 5%
       }
     }
   },
@@ -112,20 +101,16 @@ const milkProducts: MilkProduct[] = [
         '500ml': 55,
         '1L': 105
       },
-      chennai: {
-        '500ml': 65,
-        '1L': 120
-      },
       subscription: {
-        monthly1L: 3420, // ₹120 x 30 - 5%
-        monthly2L: 6840  // ₹120 x 60 - 5%
+        monthly1L: 2992.5, // ₹105 x 30 - 5%
+        monthly2L: 5985    // ₹105 x 60 - 5%
       }
     }
   },
 ];
 
 interface ProductCatalogProps {
-  region: 'default' | 'chennai';
+  region: 'default'; // Updated to only use default region
   purchaseType: 'regular' | 'subscription';
 }
 
@@ -134,7 +119,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
   
   const handleAddToCart = (product: MilkProduct, size: string, price: number) => {
     addToCart({
-      id: `${product.id}-${size}`, // Already a string, which is now allowed by CartContext
+      id: `${product.id}-${size}`,
       name: `${product.type} Milk (${size})`,
       price: price,
       image: product.image,
@@ -149,7 +134,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
 
   const handleAddSubscription = (product: MilkProduct, quantity: string, price: number) => {
     addToCart({
-      id: `${product.id}-subscription-${quantity}`, // Already a string, which is now allowed by CartContext
+      id: `${product.id}-subscription-${quantity}`,
       name: `${product.type} Milk Monthly Subscription (${quantity})`,
       price: price,
       image: product.image,
@@ -171,14 +156,17 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
+          whileHover={{ y: -5 }}
           className="h-full"
         >
           <Card className="h-full flex flex-col overflow-hidden border-lushmilk-cream/30 hover:border-lushmilk-terracotta/30 transition-colors">
             <div className="relative h-48 overflow-hidden">
-              <img 
+              <motion.img 
                 src={product.image} 
                 alt={product.type} 
                 className="w-full h-full object-cover"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
               />
               {product.popular && (
                 <Badge className="absolute top-2 right-2 bg-lushmilk-terracotta text-white">
@@ -232,11 +220,13 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
               
               {purchaseType === 'regular' && (
                 <div className="mt-4 grid grid-cols-1 gap-2">
-                  {Object.entries(region === 'chennai' ? 
-                    product.pricing.chennai || product.pricing.default : 
-                    product.pricing.default
-                  ).map(([size, price]) => (
-                    <div key={size} className="flex justify-between items-center p-2 bg-lushmilk-cream/10 rounded-md">
+                  {Object.entries(product.pricing.default).map(([size, price]) => (
+                    <motion.div 
+                      key={size} 
+                      className="flex justify-between items-center p-2 bg-lushmilk-cream/10 rounded-md"
+                      whileHover={{ backgroundColor: 'rgba(240, 231, 219, 0.2)' }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       <span className="font-medium text-lushmilk-brown">{size}</span>
                       <div className="flex items-center gap-3">
                         <span className="text-lushmilk-terracotta font-semibold">₹{price}</span>
@@ -249,14 +239,18 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
                           Add
                         </Button>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
               
               {purchaseType === 'subscription' && (
                 <div className="mt-4 grid grid-cols-1 gap-3">
-                  <div className="flex justify-between items-center p-3 bg-lushmilk-cream/10 rounded-md border border-lushmilk-cream/20">
+                  <motion.div 
+                    className="flex justify-between items-center p-3 bg-lushmilk-cream/10 rounded-md border border-lushmilk-cream/20"
+                    whileHover={{ backgroundColor: 'rgba(240, 231, 219, 0.2)', borderColor: 'rgba(226, 190, 159, 0.3)' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <div>
                       <span className="font-medium text-lushmilk-brown">1L Daily</span>
                       <p className="text-xs text-lushmilk-charcoal/80">(30 days)</p>
@@ -279,9 +273,13 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
                         Subscribe
                       </Button>
                     </div>
-                  </div>
+                  </motion.div>
                   
-                  <div className="flex justify-between items-center p-3 bg-lushmilk-cream/10 rounded-md border border-lushmilk-cream/20">
+                  <motion.div 
+                    className="flex justify-between items-center p-3 bg-lushmilk-cream/10 rounded-md border border-lushmilk-cream/20"
+                    whileHover={{ backgroundColor: 'rgba(240, 231, 219, 0.2)', borderColor: 'rgba(226, 190, 159, 0.3)' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <div>
                       <span className="font-medium text-lushmilk-brown">2L Daily</span>
                       <p className="text-xs text-lushmilk-charcoal/80">(30 days)</p>
@@ -304,7 +302,7 @@ const ProductCatalog: React.FC<ProductCatalogProps> = ({ region, purchaseType })
                         Subscribe
                       </Button>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
               )}
             </CardContent>
