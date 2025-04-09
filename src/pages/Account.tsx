@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -22,21 +22,7 @@ const Account = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteConfirmLoading, setDeleteConfirmLoading] = useState(false);
-  const { user, session, signOut, loading: authLoading, isAuthenticated } = useAuth();
-
-  // Check if user is already logged in
-  useEffect(() => {
-    if (authLoading) return;
-    
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session && window.location.pathname === '/account/profile') {
-        navigate('/account');
-      }
-    };
-    
-    checkSession();
-  }, [navigate, authLoading, isAuthenticated]);
+  const { user, loading: authLoading, isAuthenticated, signOut } = useAuth();
 
   const handleDeleteAccount = async () => {
     try {
@@ -126,7 +112,7 @@ const Account = () => {
                 </TabsList>
                 
                 <TabsContent value="profile">
-                  <UserProfile user={user} />
+                  <UserProfile />
                 </TabsContent>
                 
                 <TabsContent value="payment-history">

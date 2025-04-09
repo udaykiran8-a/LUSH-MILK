@@ -1,5 +1,5 @@
 
-import React, { StrictMode } from "react";
+import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
@@ -22,7 +22,6 @@ import Blog from "./pages/Blog";
 
 // Components
 import ClickAnimation from "./components/ClickAnimation";
-import CursorSparkle from "./components/CursorSparkle";
 import CookieConsent from "./components/CookieConsent";
 import { useAuth } from "./hooks/useAuth";
 
@@ -76,21 +75,18 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <CartProvider>
-            <TooltipProvider>
-              <ClickAnimation />
-              <CursorSparkle />
-              <Toaster position="top-right" richColors closeButton />
-              <AppRoutes />
-              <CookieConsent />
-            </TooltipProvider>
-          </CartProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <CartProvider>
+          <TooltipProvider>
+            <ClickAnimation />
+            <Toaster position="top-right" richColors closeButton />
+            <AppRoutes />
+            <CookieConsent />
+          </TooltipProvider>
+        </CartProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 

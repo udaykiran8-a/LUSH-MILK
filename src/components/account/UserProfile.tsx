@@ -1,106 +1,18 @@
 
-import React, { useState, useEffect } from 'react';
-import { User as AuthUser } from '@supabase/supabase-js';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Save, User } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Loader2, Save, User, Mail, Phone, Fingerprint, Shield, Clock } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { format } from 'date-fns';
 
-interface UserProfileProps {
-  user: AuthUser | null;
-}
-
-interface UserData {
-  name: string;
-  email: string;
-  phone: string | null;
-  client_id: string | null;
-}
-
-const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
-  const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [phone, setPhone] = useState('');
+const UserProfile: React.FC = () => {
+  const { user, userProfile, loading, updateUserProfile } = useAuth();
+  const [phone, setPhone] = useState(userProfile?.phone || '');
   const [updatingProfile, setUpdatingProfile] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user) return;
-      
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Use a raw query to get user data with proper error handling
-        const { data, error } = await supabase
-          .from('users')
-          .select('name, email, phone, client_id')
-          .eq('auth_uid', user.id)
-          .maybeSingle(); // Use maybeSingle instead of single to prevent errors when no data is found
-        
-        if (error) {
-          console.error('Error fetching user data:', error);
-          setError('Failed to load user profile');
-          // Only show toast once, not on every render
-          toast.error('Failed to load user profile', {
-            id: 'profile-error',
-            description: error.message
-          });
-          return;
-        }
-        
-        if (!data) {
-          console.log('No user data found for auth_uid:', user.id);
-          setError('User profile not found');
-          return;
-        }
-        
-        // Now we safely type the data
-        const typedData = data as unknown as UserData;
-        setUserData(typedData);
-        setPhone(typedData.phone || '');
-      } catch (error) {
-        console.error('Error in user data fetch:', error);
-        setError('An unexpected error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchUserData();
-  }, [user]);
-
-  const handleUpdateProfile = async () => {
-    if (!user || !userData) return;
-    
-    try {
-      setUpdatingProfile(true);
-      
-      // Update the user's phone number
-      const { error } = await supabase
-        .from('users')
-        .update({ phone })
-        .eq('auth_uid', user.id);
-      
-      if (error) throw error;
-      
-      toast.success('Profile updated successfully', {
-        id: 'profile-update-success', // Add ID to prevent duplicate toasts
-      });
-      setUserData({ ...userData, phone });
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error('Failed to update profile', {
-        id: 'profile-update-error', // Add ID to prevent duplicate toasts
-      });
-    } finally {
-      setUpdatingProfile(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -110,10 +22,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
     );
   }
 
-  if (error) {
+  if (!user || !userProfile) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-500 mb-4">{error}</p>
+        <p className="text-red-500 mb-4">User profile not found. Please sign in again.</p>
         <Button
           onClick={() => window.location.reload()}
           className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90"
@@ -124,8 +36,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
     );
   }
 
+  const handleUpdateProfile = async () => {
+    try {
+      setUpdatingProfile(true);
+      
+      await updateUserProfile({ phone });
+      
+    } catch (error) {
+      console.error('Error in profile update:', error);
+      toast.error('An unexpected error occurred', {
+        id: 'profile-update-error',
+      });
+    } finally {
+      setUpdatingProfile(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Basic Information Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
@@ -139,29 +68,50 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name" className="flex items-center">
+                <User className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Full Name
+              </Label>
               <Input
                 id="name"
-                value={userData?.name || ''}
+                value={userProfile.name || ''}
                 disabled
                 className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email" className="flex items-center">
+                <Mail className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Email Address
+              </Label>
               <Input
                 id="email"
                 type="email"
-                value={userData?.email || ''}
+                value={userProfile.email || ''}
                 disabled
                 className="bg-gray-50"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="client-id">Client ID</Label>
+              <Label htmlFor="auth-id" className="flex items-center">
+                <Fingerprint className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Auth ID
+              </Label>
+              <Input
+                id="auth-id"
+                value={userProfile.auth_uid || ''}
+                disabled
+                className="bg-gray-50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="client-id" className="flex items-center">
+                <Shield className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Client ID
+              </Label>
               <Input
                 id="client-id"
-                value={userData?.client_id || ''}
+                value={userProfile.client_id || ''}
                 disabled
                 className="bg-gray-50"
               />
@@ -170,7 +120,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="role" className="flex items-center">
+                <Shield className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Role
+              </Label>
+              <Input
+                id="role"
+                value={userProfile.role || ''}
+                disabled
+                className="bg-gray-50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="flex items-center">
+                <Phone className="h-4 w-4 mr-1 text-lushmilk-terracotta/70" />
+                Phone Number
+              </Label>
               <Input
                 id="phone"
                 value={phone}
@@ -180,7 +145,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
             </div>
           </div>
           
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-between items-center mt-4">
+            <div className="text-sm text-gray-500 flex items-center">
+              <Clock className="h-4 w-4 mr-1" />
+              Account created: {user.created_at ? format(new Date(user.created_at), 'PPP') : 'N/A'}
+            </div>
+            
             <Button 
               onClick={handleUpdateProfile} 
               disabled={updatingProfile}
