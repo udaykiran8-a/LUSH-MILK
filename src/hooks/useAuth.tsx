@@ -76,7 +76,7 @@ export const useAuth = () => {
   }, [authState.isAuthenticated, updateLastActivity]);
 
   useEffect(() => {
-    let authSubscription: { data: { subscription: any }; };
+    let authSubscription: { data: { subscription: any } };
     
     // Set up auth state listener
     const setupAuthListener = async () => {
@@ -156,7 +156,11 @@ export const useAuth = () => {
     // Cleanup function
     return () => {
       if (authSubscription) {
-        supabase.auth.onAuthStateChange().subscription.unsubscribe();
+        // Fixed the unsubscribe method
+        const subscription = authSubscription.data.subscription;
+        if (subscription && typeof subscription.unsubscribe === 'function') {
+          subscription.unsubscribe();
+        }
       }
     };
   }, []);

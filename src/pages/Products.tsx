@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, Leaf, Droplet, ShoppingCart, Search, FilterX, ViewGrid, ViewList } from 'lucide-react';
+import { Check, Leaf, Droplet, ShoppingCart, Search, FilterX, LayoutGrid, List } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProductCard, { Product } from '@/components/ProductCard';
 import Product3DCard from '@/components/Product3DCard';
@@ -272,7 +271,7 @@ const Products = () => {
                   className={`${viewMode === 'grid' ? 'bg-lushmilk-cream/20' : ''}`}
                   onClick={() => setViewMode('grid')}
                 >
-                  <ViewGrid className="h-4 w-4 mr-1" />
+                  <LayoutGrid className="h-4 w-4 mr-1" />
                   Grid
                 </Button>
                 <Button
@@ -281,7 +280,7 @@ const Products = () => {
                   className={`${viewMode === 'list' ? 'bg-lushmilk-cream/20' : ''}`}
                   onClick={() => setViewMode('list')}
                 >
-                  <ViewList className="h-4 w-4 mr-1" />
+                  <List className="h-4 w-4 mr-1" />
                   List
                 </Button>
               </div>
