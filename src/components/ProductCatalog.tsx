@@ -1,6 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import ProductItem, { MilkProduct } from './catalog/ProductItem';
+import { motion } from 'framer-motion';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 // Define milk product types and their details
 const milkProducts: MilkProduct[] = [
@@ -86,16 +88,93 @@ interface ProductCatalogProps {
 }
 
 const ProductCatalog: React.FC<ProductCatalogProps> = ({ purchaseType }) => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {milkProducts.map((product, index) => (
-        <ProductItem 
-          key={product.id}
-          product={product}
-          index={index}
-          purchaseType={purchaseType}
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl md:text-3xl font-medium text-lushmilk-brown">Our Premium Products</h2>
+        
+        <div className="flex gap-2 bg-lushmilk-cream/20 p-1 rounded-md">
+          <button 
+            className={`px-3 py-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
+            onClick={() => setViewMode('grid')}
+          >
+            Grid
+          </button>
+          <button 
+            className={`px-3 py-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-white/50'}`}
+            onClick={() => setViewMode('list')}
+          >
+            List
+          </button>
+        </div>
+      </div>
+
+      <Tabs defaultValue="regular" className="w-full mb-6">
+        <TabsList className="w-full max-w-md mx-auto mb-6 bg-lushmilk-cream/20">
+          <TabsTrigger 
+            value="regular" 
+            className="flex-1 data-[state=active]:bg-lushmilk-terracotta data-[state=active]:text-white"
+          >
+            Regular Purchase
+          </TabsTrigger>
+          <TabsTrigger 
+            value="subscription" 
+            className="flex-1 data-[state=active]:bg-lushmilk-terracotta data-[state=active]:text-white"
+          >
+            Subscription
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="regular" className="space-y-6">
+          <motion.div 
+            className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-3 gap-8" : "flex flex-col gap-6"}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {milkProducts.map((product, index) => (
+              <ProductItem 
+                key={product.id}
+                product={product}
+                index={index}
+                purchaseType="regular"
+                viewMode={viewMode}
+              />
+            ))}
+          </motion.div>
+        </TabsContent>
+        
+        <TabsContent value="subscription" className="space-y-6">
+          <motion.div 
+            className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-3 gap-8" : "flex flex-col gap-6"}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {milkProducts.map((product, index) => (
+              <ProductItem 
+                key={product.id}
+                product={product}
+                index={index}
+                purchaseType="subscription"
+                viewMode={viewMode}
+              />
+            ))}
+          </motion.div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

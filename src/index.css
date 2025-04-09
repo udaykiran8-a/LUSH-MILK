@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/gilroy-font@1.0.0/stylesheet.css');
 
 @tailwind base;
 @tailwind components;
@@ -96,7 +95,7 @@
   }
   
   h1, h2, h3, h4, h5 {
-    @apply font-serif tracking-tight;
+    @apply font-serif tracking-tight font-medium;
   }
   
   /* Make links and buttons show pointer cursor */
@@ -132,6 +131,22 @@
   
   .glass-card {
     @apply backdrop-blur-sm bg-white/80 border border-white/40 rounded-lg shadow-lg transition-all duration-300;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-3 border border-lushmilk-cream rounded-md focus:outline-none focus:ring-2 focus:ring-lushmilk-terracotta/30 focus:border-lushmilk-terracotta transition-all duration-300;
+  }
+
+  .form-label {
+    @apply block text-lushmilk-brown font-medium mb-2;
+  }
+
+  .form-group {
+    @apply mb-6;
+  }
+
+  .interactive-item {
+    @apply transform transition-all duration-300 hover:scale-105 active:scale-95;
   }
 }
 
