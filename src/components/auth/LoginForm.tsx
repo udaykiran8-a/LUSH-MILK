@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowRight, EyeIcon, EyeOffIcon, Loader2, Mail, Lock } from 'lucide-react';
+import { ArrowRight, EyeIcon, EyeOffIcon, Loader2, Mail, Lock, ShieldAlert, RefreshCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,9 +17,71 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [isLocked, setIsLocked] = useState(false);
+  const [lockExpiry, setLockExpiry] = useState<number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  
+  // Password strength indicator
+  const [passwordStrength, setPasswordStrength] = useState<{
+    score: number;
+    feedback: string;
+  }>({ score: 0, feedback: '' });
+
+  // Check if account is locked
+  useEffect(() => {
+    const lockedUntil = localStorage.getItem('account_lock_expiry');
+    const attempts = localStorage.getItem('login_attempts');
+    
+    if (lockedUntil) {
+      const expiry = parseInt(lockedUntil, 10);
+      if (expiry > Date.now()) {
+        setIsLocked(true);
+        setLockExpiry(expiry);
+        setLoginAttempts(parseInt(attempts || '0', 10));
+      } else {
+        // Lock expired
+        localStorage.removeItem('account_lock_expiry');
+        localStorage.setItem('login_attempts', '0');
+        setIsLocked(false);
+        setLoginAttempts(0);
+      }
+    } else if (attempts) {
+      setLoginAttempts(parseInt(attempts, 10));
+    }
+  }, []);
+
+  // Countdown timer for account lockout
+  useEffect(() => {
+    if (isLocked && lockExpiry) {
+      const intervalId = setInterval(() => {
+        const remaining = Math.max(0, lockExpiry - Date.now());
+        setTimeRemaining(remaining);
+        
+        if (remaining === 0) {
+          setIsLocked(false);
+          localStorage.removeItem('account_lock_expiry');
+          localStorage.setItem('login_attempts', '0');
+          setLoginAttempts(0);
+          clearInterval(intervalId);
+        }
+      }, 1000);
+      
+      return () => clearInterval(intervalId);
+    }
+  }, [isLocked, lockExpiry]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if account is locked
+    if (isLocked) {
+      toast.error("Account temporarily locked", {
+        description: "Too many failed attempts. Please try again later."
+      });
+      return;
+    }
+    
     if (!loginEmail || !loginPassword) {
       toast.error("Please enter both email and password");
       return;
@@ -34,18 +96,89 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
       
       if (error) throw error;
       
+      // Successful login
       toast.success("Login successful!");
+      // Reset login attempts
+      localStorage.setItem('login_attempts', '0');
+      setLoginAttempts(0);
+      
       // No need to navigate here as the auth listener will handle it
     } catch (error: any) {
       console.error("Login error:", error);
-      toast.error(error.message || "Failed to login");
+      
+      // Increment login attempts
+      const newAttempts = loginAttempts + 1;
+      setLoginAttempts(newAttempts);
+      localStorage.setItem('login_attempts', newAttempts.toString());
+      
+      // Lock account after 5 failed attempts (15 minute lockout)
+      if (newAttempts >= 5) {
+        const lockoutDuration = 15 * 60 * 1000; // 15 minutes
+        const expiryTime = Date.now() + lockoutDuration;
+        
+        setIsLocked(true);
+        setLockExpiry(expiryTime);
+        localStorage.setItem('account_lock_expiry', expiryTime.toString());
+        
+        toast.error("Account temporarily locked", {
+          description: "Too many failed login attempts. Please try again after 15 minutes."
+        });
+      } else {
+        toast.error(error.message || "Failed to login", {
+          description: `Attempt ${newAttempts} of 5 before temporary lockout.`
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const resetLockout = () => {
+    // This would typically be protected by additional verification in production
+    localStorage.removeItem('account_lock_expiry');
+    localStorage.setItem('login_attempts', '0');
+    setIsLocked(false);
+    setLoginAttempts(0);
+    setLockExpiry(null);
+    
+    toast.success("Lockout has been reset", {
+      description: "You can now attempt to log in again."
+    });
+  };
+
+  // Format remaining lockout time
+  const formatTimeRemaining = (ms: number) => {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <form onSubmit={handleLogin} className="space-y-6">
+      {isLocked && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+          <div className="flex items-start">
+            <ShieldAlert className="h-5 w-5 text-red-500 mt-0.5 mr-2" />
+            <div>
+              <h3 className="text-sm font-medium text-red-800">Account temporarily locked</h3>
+              <p className="text-sm text-red-700 mt-1">
+                Too many failed login attempts. Please try again in {formatTimeRemaining(timeRemaining)}.
+              </p>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                className="mt-2 text-xs"
+                onClick={resetLockout}
+              >
+                <RefreshCcw className="h-3 w-3 mr-1" />
+                Reset lockout (Demo only)
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative">
@@ -58,6 +191,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
             required
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
+            disabled={isLocked || loading}
           />
         </div>
       </div>
@@ -79,11 +213,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
             required
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
+            disabled={isLocked || loading}
           />
           <button
             type="button"
             className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
             onClick={() => setShowPassword(!showPassword)}
+            disabled={isLocked || loading}
           >
             {showPassword ? (
               <EyeOffIcon className="h-5 w-5" />
@@ -97,7 +233,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
       <Button
         type="submit"
         className="w-full bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white flex items-center justify-center"
-        disabled={loading}
+        disabled={loading || isLocked}
       >
         {loading ? (
           <>
@@ -110,6 +246,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
           </>
         )}
       </Button>
+      
+      {loginAttempts > 0 && !isLocked && (
+        <p className="text-xs text-amber-600 text-center">
+          Failed login attempts: {loginAttempts}/5 before temporary lockout
+        </p>
+      )}
     </form>
   );
 };
