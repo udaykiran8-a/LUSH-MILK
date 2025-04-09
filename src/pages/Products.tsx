@@ -5,9 +5,10 @@ import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check, Leaf, Droplet, ShoppingCart, Search, FilterX } from 'lucide-react';
+import { Check, Leaf, Droplet, ShoppingCart, Search, FilterX, ViewGrid, ViewList } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ProductCard, { Product } from '@/components/ProductCard';
+import Product3DCard from '@/components/Product3DCard';
 import { Input } from '@/components/ui/input';
 
 // Sample product data
@@ -188,6 +189,8 @@ const ProductFeatures = () => {
 const Products = () => {
   const [category, setCategory] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [use3D, setUse3D] = useState(true);
   
   const categories = ["All", "Cow Milk", "Buffalo Milk", "Premium Milk"];
   
@@ -261,17 +264,57 @@ const Products = () => {
               </div>
             </div>
             
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`${viewMode === 'grid' ? 'bg-lushmilk-cream/20' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                >
+                  <ViewGrid className="h-4 w-4 mr-1" />
+                  Grid
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={`${viewMode === 'list' ? 'bg-lushmilk-cream/20' : ''}`}
+                  onClick={() => setViewMode('list')}
+                >
+                  <ViewList className="h-4 w-4 mr-1" />
+                  List
+                </Button>
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                className={`${use3D ? 'bg-lushmilk-cream/20' : ''}`}
+                onClick={() => setUse3D(!use3D)}
+              >
+                {use3D ? '2D View' : '3D View'}
+              </Button>
+            </div>
+            
             <ProductFeatures />
           </div>
           
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1'} gap-6`}>
               {filteredProducts.map((product, index) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  index={index}
-                />
+                use3D ? (
+                  <Product3DCard 
+                    key={product.id} 
+                    product={product} 
+                    index={index}
+                  />
+                ) : (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    index={index}
+                  />
+                )
               ))}
             </div>
           ) : (

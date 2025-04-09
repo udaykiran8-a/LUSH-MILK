@@ -25,6 +25,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [phone, setPhone] = useState('');
   const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,17 +33,29 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
       
       try {
         setLoading(true);
+        setError(null);
         
-        // Use a raw query to get user data
+        // Use a raw query to get user data with proper error handling
         const { data, error } = await supabase
           .from('users')
-          .select('name, email, phone, client_id, auth_uid')
+          .select('name, email, phone, client_id')
           .eq('auth_uid', user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle instead of single to prevent errors when no data is found
         
         if (error) {
           console.error('Error fetching user data:', error);
-          toast.error('Failed to load user profile');
+          setError('Failed to load user profile');
+          // Only show toast once, not on every render
+          toast.error('Failed to load user profile', {
+            id: 'profile-error',
+            description: error.message
+          });
+          return;
+        }
+        
+        if (!data) {
+          console.log('No user data found for auth_uid:', user.id);
+          setError('User profile not found');
           return;
         }
         
@@ -52,7 +65,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
         setPhone(typedData.phone || '');
       } catch (error) {
         console.error('Error in user data fetch:', error);
-        toast.error('Failed to load user profile');
+        setError('An unexpected error occurred');
       } finally {
         setLoading(false);
       }
@@ -75,11 +88,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
       
       if (error) throw error;
       
-      toast.success('Profile updated successfully');
+      toast.success('Profile updated successfully', {
+        id: 'profile-update-success', // Add ID to prevent duplicate toasts
+      });
       setUserData({ ...userData, phone });
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      toast.error('Failed to update profile', {
+        id: 'profile-update-error', // Add ID to prevent duplicate toasts
+      });
     } finally {
       setUpdatingProfile(false);
     }
@@ -89,6 +106,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
     return (
       <div className="flex justify-center py-8">
         <Loader2 className="h-8 w-8 animate-spin text-lushmilk-terracotta" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500 mb-4">{error}</p>
+        <Button
+          onClick={() => window.location.reload()}
+          className="bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90"
+        >
+          Retry
+        </Button>
       </div>
     );
   }
