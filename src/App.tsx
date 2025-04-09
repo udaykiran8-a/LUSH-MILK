@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { StrictMode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
@@ -76,19 +76,21 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <TooltipProvider>
-            <ClickAnimation />
-            <CursorSparkle />
-            <Toaster position="top-right" richColors closeButton />
-            <AppRoutes />
-            <CookieConsent />
-          </TooltipProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <ClickAnimation />
+              <CursorSparkle />
+              <Toaster position="top-right" richColors closeButton />
+              <AppRoutes />
+              <CookieConsent />
+            </TooltipProvider>
+          </CartProvider>
         </BrowserRouter>
-      </CartProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </StrictMode>
   );
 };
 

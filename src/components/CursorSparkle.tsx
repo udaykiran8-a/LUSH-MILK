@@ -115,6 +115,10 @@ const CursorSparkle = () => {
     };
   }, [counter, cursorX, cursorY]);
 
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
   return (
     <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
       {/* Only show cursor on non-mobile devices */}
