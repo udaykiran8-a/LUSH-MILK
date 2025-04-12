@@ -23,6 +23,7 @@ import Blog from "./pages/Blog";
 // Components
 import ClickAnimation from "./components/ClickAnimation";
 import CookieConsent from "./components/CookieConsent";
+import CursorSparkle from "./components/CursorSparkle";
 import { useAuth } from "./hooks/useAuth";
 
 // Protected Route component
@@ -79,6 +80,7 @@ const App = () => {
       <BrowserRouter>
         <CartProvider>
           <TooltipProvider>
+            <CursorSparkle />
             <ClickAnimation />
             <Toaster position="top-right" richColors closeButton />
             <AppRoutes />
