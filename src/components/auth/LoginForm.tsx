@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +6,9 @@ import { Label } from '@/components/ui/label';
 import { ArrowRight, EyeIcon, EyeOffIcon, Loader2, Mail, Lock, ShieldAlert, RefreshCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+// Import our custom ReCaptcha component
+import { ReCaptcha } from '@/components/security/ReCaptcha';
+import { isValidReCaptchaToken } from '@/services/ReCaptchaService';
 
 interface LoginFormProps {
   loading: boolean;
@@ -21,6 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
   const [isLocked, setIsLocked] = useState(false);
   const [lockExpiry, setLockExpiry] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   
   // Password strength indicator
   const [passwordStrength, setPasswordStrength] = useState<{
@@ -71,6 +74,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
     }
   }, [isLocked, lockExpiry]);
 
+  const handleRecaptchaVerify = (token: string) => {
+    setRecaptchaToken(token);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -86,9 +93,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
       toast.error("Please enter both email and password");
       return;
     }
+
+    // Only check recaptcha for accounts with multiple failed attempts
+    if (loginAttempts >= 2 && !recaptchaToken) {
+      toast.error("Please complete the reCAPTCHA verification");
+      return;
+    }
     
     try {
       setLoading(true);
+
+      // Verify reCAPTCHA token if we have login attempts
+      if (loginAttempts >= 2 && recaptchaToken) {
+        const isValid = await isValidReCaptchaToken(recaptchaToken);
+        if (!isValid) {
+          throw new Error("reCAPTCHA verification failed. Please try again.");
+        }
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
@@ -110,6 +132,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
       const newAttempts = loginAttempts + 1;
       setLoginAttempts(newAttempts);
       localStorage.setItem('login_attempts', newAttempts.toString());
+      
+      // Reset reCAPTCHA token after failed attempt
+      setRecaptchaToken(null);
       
       // Lock account after 5 failed attempts (15 minute lockout)
       if (newAttempts >= 5) {
@@ -230,10 +255,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
         </div>
       </div>
       
+      {/* Show reCAPTCHA after multiple failed attempts */}
+      {loginAttempts >= 2 && (
+        <div className="py-2">
+          <p className="text-sm text-gray-600 mb-2">
+            Please verify you are human:
+          </p>
+          <ReCaptcha onVerify={handleRecaptchaVerify} />
+        </div>
+      )}
+      
       <Button
         type="submit"
         className="w-full bg-lushmilk-terracotta hover:bg-lushmilk-terracotta/90 text-white flex items-center justify-center"
-        disabled={loading || isLocked}
+        disabled={loading || isLocked || (loginAttempts >= 2 && !recaptchaToken)}
       >
         {loading ? (
           <>
@@ -248,8 +283,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ loading, setLoading }) => {
       </Button>
       
       {loginAttempts > 0 && !isLocked && (
-        <p className="text-xs text-amber-600 text-center">
-          Failed login attempts: {loginAttempts}/5 before temporary lockout
+        <p className="text-xs text-center text-gray-500">
+          Failed attempts: {loginAttempts}/5 before temporary lockout
         </p>
       )}
     </form>

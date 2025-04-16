@@ -1,8 +1,8 @@
-
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
 import { toast } from 'sonner';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 interface AuthState {
   user: User | null;
@@ -43,6 +43,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     lastActivity: null,
     userProfile: null
   });
+  
+  // Use refs to prevent race conditions and stale closure issues
+  const authStateRef = useRef<AuthState>(authState);
+  
+  // Keep the ref in sync with state
+  useEffect(() => {
+    authStateRef.current = authState;
+  }, [authState]);
 
   // Update last activity timestamp
   const updateLastActivity = useCallback(() => {
@@ -52,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }));
   }, []);
 
-  // Fetch user profile data from database
+  // Fetch user profile data from database with proper error handling
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -63,19 +71,65 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         console.error('Error fetching user profile:', error.message);
+        toast.error('Could not load user profile', { 
+          description: 'Please try reloading the page',
+          duration: 5000
+        });
         return null;
       }
 
       return data as UserProfile;
     } catch (error) {
       console.error('Error in fetchUserProfile:', error);
+      toast.error('Unexpected error loading profile', { 
+        description: 'Please try signing in again',
+        duration: 5000
+      });
       return null;
     }
   }, []);
 
-  // Update user profile in database
+  // Create customer record for new users
+  const ensureCustomerRecordExists = useCallback(async (userId: string, userEmail: string, userName: string) => {
+    try {
+      // First check if customer record already exists
+      const { data: existingCustomer, error: queryError } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (queryError) {
+        console.error('Error checking for customer record:', queryError);
+        return;
+      }
+      
+      // Only create if it doesn't exist
+      if (!existingCustomer) {
+        // Create a customer record
+        const { error: insertError } = await supabase
+          .from('customers')
+          .insert({
+            user_id: userId,
+            subscription_type: 'none',
+            delivery_preference: 'morning'
+          });
+        
+        if (insertError) {
+          console.error('Error creating customer record:', insertError);
+          return;
+        }
+        
+        console.log('Customer record created for user:', userId);
+      }
+    } catch (error) {
+      console.error('Failed to ensure customer record exists:', error);
+    }
+  }, []);
+
+  // Update user profile in database with better error handling
   const updateUserProfile = async (profileData: Partial<UserProfile>) => {
-    if (!authState.user?.id) {
+    if (!authStateRef.current.user?.id) {
       toast.error('You must be logged in to update your profile');
       return;
     }
@@ -84,7 +138,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { error } = await supabase
         .from('users')
         .update(profileData)
-        .eq('auth_uid', authState.user.id);
+        .eq('auth_uid', authStateRef.current.user.id);
 
       if (error) throw error;
 
@@ -97,29 +151,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast.success('Profile updated successfully');
     } catch (error: any) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile: ' + error.message);
+      toast.error('Failed to update profile', { 
+        description: error.message || 'Please try again later',
+        duration: 5000
+      });
     }
   };
 
-  // Check for session timeout
+  // Check for session timeout using a single interval and ref
   useEffect(() => {
-    if (!authState.isAuthenticated || !authState.lastActivity) return;
-
-    const checkInactivity = setInterval(() => {
-      if (authState.lastActivity && Date.now() - authState.lastActivity > SESSION_TIMEOUT) {
+    const inactivityCheckInterval = setInterval(() => {
+      const { isAuthenticated, lastActivity } = authStateRef.current;
+      
+      if (isAuthenticated && lastActivity && (Date.now() - lastActivity > SESSION_TIMEOUT)) {
         // Session timeout - sign out user
         console.log('Session timeout due to inactivity');
+        clearInterval(inactivityCheckInterval);
+        
         supabase.auth.signOut().then(() => {
           toast.warning('Your session has expired', {
             id: 'session-timeout',
             description: 'Please log in again to continue.',
           });
+        }).catch(error => {
+          console.error('Error signing out after timeout:', error);
         });
       }
     }, 60000); // Check every minute
 
-    return () => clearInterval(checkInactivity);
-  }, [authState.isAuthenticated, authState.lastActivity]);
+    return () => clearInterval(inactivityCheckInterval);
+  }, []);
 
   // Add activity listeners
   useEffect(() => {
@@ -143,110 +204,156 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [authState.isAuthenticated, updateLastActivity]);
 
+  // Main auth setup effect
   useEffect(() => {
-    // Setup auth state listener
-    const setupAuthListener = async () => {
+    let subscription: { data: { subscription: any } } | null = null;
+    
+    const setupAuth = async () => {
       try {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          async (event, session) => {
-            console.log('Auth event:', event);
+        // Setup auth state listener
+        const setupAuthListener = async () => {
+          try {
+            const { data } = await supabase.auth.onAuthStateChange(
+              async (event, session) => {
+                console.log('Auth event:', event);
+                
+                const user = session?.user ?? null;
+                const isAuthenticated = !!user;
+                
+                // First update auth state synchronously
+                setAuthState(current => ({
+                  ...current,
+                  session,
+                  user,
+                  loading: isAuthenticated, // Keep loading true until we fetch the profile
+                  isAuthenticated,
+                  lastActivity: isAuthenticated ? Date.now() : null
+                }));
+                
+                // Then fetch user profile if authenticated
+                if (isAuthenticated && user) {
+                  try {
+                    const userProfile = await fetchUserProfile(user.id);
+                    
+                    // If this is a sign up or sign in, ensure customer record exists
+                    if (event === 'SIGNED_IN' || event === 'SIGNED_UP') {
+                      await ensureCustomerRecordExists(
+                        user.id, 
+                        user.email || '',
+                        userProfile?.name || user.email || 'New Customer'
+                      );
+                    }
+                    
+                    // Now update with the profile data
+                    setAuthState(current => ({
+                      ...current,
+                      userProfile,
+                      loading: false
+                    }));
+                  } catch (profileError) {
+                    console.error('Error loading user profile:', profileError);
+                    setAuthState(current => ({
+                      ...current,
+                      loading: false
+                    }));
+                  }
+                } else {
+                  // Make sure loading is false when not authenticated
+                  setAuthState(current => ({
+                    ...current,
+                    loading: false
+                  }));
+                }
+                
+                // Show auth status toasts
+                if (event === 'SIGNED_IN') {
+                  toast.success('Welcome back!', {
+                    id: 'signed-in-toast',
+                    description: 'You have successfully signed in.',
+                    duration: 3000,
+                  });
+                } else if (event === 'SIGNED_UP') {
+                  toast.success('Welcome to Lush Milk!', {
+                    id: 'signed-up-toast',
+                    description: 'Your account has been created successfully.',
+                    duration: 5000,
+                  });
+                } else if (event === 'SIGNED_OUT') {
+                  toast.info('You have been signed out', {
+                    id: 'signed-out-toast',
+                    duration: 3000,
+                  });
+                }
+              }
+            );
             
-            const user = session?.user ?? null;
-            const isAuthenticated = !!user;
-            
-            // First update auth state synchronously
+            subscription = data;
+            return data.subscription;
+          } catch (error) {
+            console.error('Error setting up auth listener:', error);
             setAuthState(current => ({
               ...current,
-              session,
-              user,
-              loading: isAuthenticated, // Keep loading true until we fetch the profile
-              isAuthenticated,
-              lastActivity: isAuthenticated ? Date.now() : null
+              loading: false
             }));
-            
-            // Then fetch user profile if authenticated
-            if (isAuthenticated && user) {
+            return null;
+          }
+        };
+
+        // Check for existing session
+        try {
+          const { data, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            throw error;
+          }
+          
+          const session = data.session;
+          const user = session?.user ?? null;
+          const isAuthenticated = !!user;
+
+          setAuthState(current => ({
+            ...current,
+            session,
+            user,
+            loading: isAuthenticated, // Keep loading true until we fetch profile
+            isAuthenticated,
+            lastActivity: isAuthenticated ? Date.now() : null
+          }));
+          
+          if (isAuthenticated && user) {
+            try {
               const userProfile = await fetchUserProfile(user.id);
               
-              // Now update with the profile data
               setAuthState(current => ({
                 ...current,
                 userProfile,
                 loading: false
               }));
-            } else {
-              // Make sure loading is false when not authenticated
+            } catch (profileError) {
+              console.error('Error loading initial user profile:', profileError);
               setAuthState(current => ({
                 ...current,
                 loading: false
               }));
             }
-            
-            // Show auth status toasts
-            if (event === 'SIGNED_IN') {
-              toast.success('Welcome back!', {
-                id: 'signed-in-toast',
-                description: 'You have successfully signed in.',
-                duration: 3000,
-              });
-            } else if (event === 'SIGNED_OUT') {
-              toast.info('You have been signed out', {
-                id: 'signed-out-toast',
-                duration: 3000,
-              });
-            }
+          } else {
+            setAuthState(current => ({
+              ...current,
+              loading: false
+            }));
           }
-        );
-        
-        return subscription;
-      } catch (error) {
-        console.error('Error setting up auth listener:', error);
-        setAuthState(current => ({
-          ...current,
-          loading: false
-        }));
-        return null;
-      }
-    };
-
-    // Check for existing session
-    const checkSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          throw error;
-        }
-        
-        const session = data.session;
-        const user = session?.user ?? null;
-        const isAuthenticated = !!user;
-
-        setAuthState(current => ({
-          ...current,
-          session,
-          user,
-          loading: isAuthenticated, // Keep loading true until we fetch profile
-          isAuthenticated,
-          lastActivity: isAuthenticated ? Date.now() : null
-        }));
-        
-        if (isAuthenticated && user) {
-          const userProfile = await fetchUserProfile(user.id);
-          
-          setAuthState(current => ({
-            ...current,
-            userProfile,
-            loading: false
-          }));
-        } else {
+        } catch (sessionError) {
+          console.error('Error checking session:', sessionError);
           setAuthState(current => ({
             ...current,
             loading: false
           }));
         }
+
+        // Set up auth listener after checking session
+        await setupAuthListener();
       } catch (error) {
-        console.error('Error checking session:', error);
+        console.error('Critical auth setup error:', error);
         setAuthState(current => ({
           ...current,
           loading: false
@@ -254,33 +361,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    // Initialize auth
-    let subscription: any = null;
-    
-    const initAuth = async () => {
-      // First check for existing session
-      await checkSession();
-      
-      // Then setup auth listener
-      subscription = await setupAuthListener();
-    };
+    setupAuth();
 
-    initAuth();
-
-    // Cleanup function
+    // Cleanup subscription on unmount
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+      if (subscription && subscription.data.subscription) {
+        subscription.data.subscription.unsubscribe();
       }
     };
-  }, [fetchUserProfile]);
+  }, [fetchUserProfile, ensureCustomerRecordExists]);
 
+  // Sign out function with error handling
   const signOut = async () => {
     try {
-      setAuthState(current => ({ ...current, loading: true }));
-      await supabase.auth.signOut();
+      setAuthState(current => ({
+        ...current,
+        loading: true
+      }));
       
-      // Clear user data
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+
+      // Clear local state
       setAuthState({
         user: null,
         session: null,
@@ -290,24 +395,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userProfile: null
       });
       
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast.error('Error signing out', {
-        id: 'sign-out-error',
-        description: 'Please try again later.',
+      toast.success('You have been signed out');
+    } catch (error: any) {
+      console.error('Error during sign out:', error);
+      
+      toast.error('Failed to sign out', {
+        description: error.message || 'Please try again',
+        duration: 5000
       });
-      setAuthState(current => ({ ...current, loading: false }));
+      
+      setAuthState(current => ({
+        ...current,
+        loading: false
+      }));
     }
   };
-  
-  const value = {
-    ...authState,
-    signOut,
-    updateLastActivity,
-    updateUserProfile
-  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <ErrorBoundary>
+      <AuthContext.Provider
+        value={{
+          ...authState,
+          signOut,
+          updateLastActivity,
+          updateUserProfile
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    </ErrorBoundary>
+  );
 };
 
 export const useAuth = () => {

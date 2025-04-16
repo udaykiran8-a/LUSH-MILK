@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -110,7 +109,7 @@ const RefundPolicy = () => {
                 To request a return or refund, please contact our customer support team through any of the following methods:
               </p>
               <p className="font-medium">
-                Email: support@lushmilk.com<br />
+                Email: support@lushmilk.in<br />
                 Phone: +91 9876543210 (6:00 AM - 8:00 PM, Monday to Sunday)<br />
                 In-App/Website: Submit a request through your account dashboard
               </p>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Include app data for backup -->
+    <include domain="sharedpref" path="."/>
+    <include domain="database" path="."/>
+    
+    <!-- Exclude sensitive data from backup -->
+    <exclude domain="sharedpref" path="lushmilk_auth_token.xml"/>
+    <exclude domain="sharedpref" path="lushmilk_refresh_token.xml"/>
+    <exclude domain="sharedpref" path="lushmilk_payment_temp.xml"/>
+    <exclude domain="database" path="user_credentials.db"/>
+    
+    <!-- Only include non-sensitive files -->
+    <include domain="file" path="images"/>
+    <include domain="file" path="documents"/>
+    <exclude domain="file" path="temp"/>
+    <exclude domain="file" path="logs"/>
+</full-backup-content> 

@@ -1,10 +1,12 @@
-
-import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { CartProvider } from "./contexts/CartContext";
+import { initErrorMonitoring } from "./utils/errorMonitoring";
+import { useAuth } from "./hooks/useAuth";
+import LoadingSpinner from "./components/LoadingSpinner";
+import { initializeAutomatedEmails } from '@/services/AutomatedEmailService';
+import { Providers } from './components/providers';
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Pages
 import Index from "./pages/Index";
@@ -19,38 +21,60 @@ import Terms from "./pages/Terms";
 import RefundPolicy from "./pages/RefundPolicy";
 import MilkTypes from "./pages/MilkTypes";
 import Blog from "./pages/Blog";
+import SubscriptionManagement from "./pages/SubscriptionManagement";
+
+// Lazy loaded pages
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 
 // Components
 import ClickAnimation from "./components/ClickAnimation";
 import CookieConsent from "./components/CookieConsent";
 import CursorSparkle from "./components/CursorSparkle";
-import { useAuth } from "./hooks/useAuth";
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return <LoadingSpinner />;
   }
   
   return isAuthenticated ? <>{children}</> : <Navigate to="/account" replace />;
 };
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+// Admin-only route
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, loading, userProfile } = useAuth();
+  
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  
+  const isAdmin = isAuthenticated && userProfile?.role === 'admin';
+  
+  return isAdmin ? <>{children}</> : <Navigate to="/" replace />;
+};
 
 const AppRoutes = () => {
   const { user } = useAuth();
   
-  return (
+  // Initialize error monitoring with user ID when available
+  useEffect(() => {
+    initErrorMonitoring(user?.id);
+  }, [user]);
+  
+  // Initialize automated email system
+  useEffect(() => {
+    // Set up and return cleanup function
+    const cleanup = initializeAutomatedEmails();
+    
+    return () => {
+      // Clean up event listeners and timers on unmount
+      cleanup();
+    };
+  }, []);
+  
+  const routesContent = (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/about" element={<About />} />
@@ -65,30 +89,36 @@ const AppRoutes = () => {
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:id" element={<Blog />} />
       <Route path="/cart" element={
-        <ProtectedRoute>
-          <Cart />
-        </ProtectedRoute>
+        <ProtectedRoute children={<Cart />} />
+      } />
+      <Route path="/subscriptions" element={
+        <ProtectedRoute children={<SubscriptionManagement />} />
+      } />
+      <Route path="/admin" element={
+        <AdminRoute children={
+          <Suspense fallback={<LoadingSpinner />} children={<AdminDashboard />} />
+        } />
       } />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
+  
+  return <ErrorBoundary children={routesContent} />;
 };
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <CartProvider>
-          <TooltipProvider>
-            <CursorSparkle />
-            <ClickAnimation />
-            <Toaster position="top-right" richColors closeButton />
-            <AppRoutes />
-            <CookieConsent />
-          </TooltipProvider>
-        </CartProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <Providers children={
+      <Suspense fallback={<LoadingSpinner />} children={
+        <>
+          <CursorSparkle />
+          <ClickAnimation />
+          <Toaster position="top-right" richColors closeButton />
+          <AppRoutes />
+          <CookieConsent />
+        </>
+      } />
+    } />
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Mail, Phone } from 'lucide-react';
@@ -63,7 +62,7 @@ const Footer = () => {
               </p>
               <p className="flex items-center text-lushmilk-charcoal/80">
                 <Mail size={18} className="mr-2 text-lushmilk-terracotta" />
-                info@lushmilk.com
+                info@lushmilk.in
               </p>
               <div>
                 <h5 className="font-medium text-lushmilk-brown mb-2">Newsletter</h5>

@@ -76,6 +76,83 @@ export type Database = {
           },
         ]
       }
+      cart_items: {
+        Row: {
+          id: string
+          cart_id: string
+          product_id: string | null
+          quantity: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          cart_id: string
+          product_id?: string | null
+          quantity?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          cart_id?: string
+          product_id?: string | null
+          quantity?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_cart_id_fkey"
+            columns: ["cart_id"]
+            isOneToOne: false
+            referencedRelation: "carts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cart_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      carts: {
+        Row: {
+          id: string
+          customer_id: string
+          status: string
+          last_reminder_sent: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          customer_id: string
+          status?: string
+          last_reminder_sent?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          customer_id?: string
+          status?: string
+          last_reminder_sent?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carts_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       cold_storage_units: {
         Row: {
           capacity_liters: number | null
@@ -108,6 +185,14 @@ export type Database = {
           next_delivery_date: string | null
           subscription_type: string | null
           user_id: string | null
+          email: string | null
+          full_name: string | null
+          marketing_consent: boolean | null
+          created_at: string | null
+          updated_at: string | null
+          order_notifications: boolean | null
+          marketing_emails: boolean | null
+          restock_notifications: boolean | null
         }
         Insert: {
           address?: string | null
@@ -116,6 +201,14 @@ export type Database = {
           next_delivery_date?: string | null
           subscription_type?: string | null
           user_id?: string | null
+          email?: string | null
+          full_name?: string | null
+          marketing_consent?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+          order_notifications?: boolean | null
+          marketing_emails?: boolean | null
+          restock_notifications?: boolean | null
         }
         Update: {
           address?: string | null
@@ -124,6 +217,14 @@ export type Database = {
           next_delivery_date?: string | null
           subscription_type?: string | null
           user_id?: string | null
+          email?: string | null
+          full_name?: string | null
+          marketing_consent?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+          order_notifications?: boolean | null
+          marketing_emails?: boolean | null
+          restock_notifications?: boolean | null
         }
         Relationships: [
           {
@@ -132,7 +233,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
-          },
+          }
         ]
       }
       deliveries: {
@@ -375,6 +476,51 @@ export type Database = {
           },
         ]
       }
+      product_notifications: {
+        Row: {
+          id: string
+          customer_id: string
+          product_id: string
+          type: string
+          status: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          customer_id: string
+          product_id: string
+          type?: string
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          customer_id?: string
+          product_id?: string
+          type?: string
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_notifications_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_notifications_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       products: {
         Row: {
           fat_percentage: number | null
@@ -385,6 +531,9 @@ export type Database = {
           price_500ml: number | null
           region: string | null
           snf_range: string | null
+          image: string | null
+          popular: boolean | null
+          in_stock: boolean | null
         }
         Insert: {
           fat_percentage?: number | null
@@ -395,6 +544,9 @@ export type Database = {
           price_500ml?: number | null
           region?: string | null
           snf_range?: string | null
+          image?: string | null
+          popular?: boolean | null
+          in_stock?: boolean | null
         }
         Update: {
           fat_percentage?: number | null
@@ -405,6 +557,9 @@ export type Database = {
           price_500ml?: number | null
           region?: string | null
           snf_range?: string | null
+          image?: string | null
+          popular?: boolean | null
+          in_stock?: boolean | null
         }
         Relationships: []
       }

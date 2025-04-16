@@ -1,73 +1,129 @@
-# Welcome to your Lovable project
+# Lush Milk - Milk Delivery Application
 
-## Project info
+## Overview
 
-**URL**: https://lovable.dev/projects/f11ed106-e12d-448f-9f7b-6d52a5877ea8
+Lush Milk is a premium milk delivery application that allows customers to purchase fresh milk products through one-time orders or recurring subscriptions. The application features a modern UI, secure payment processing, and a comprehensive admin dashboard.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **User Authentication**: Secure login/signup with email and Google Account
+- **Product Catalog**: Browse different milk types with detailed information
+- **Shopping Cart**: Add products and checkout securely
+- **Subscription Management**: Create, pause, and modify recurring milk deliveries
+- **Location Validation**: Check if delivery is available in your area
+- **Order History**: View past orders and their status
+- **Admin Dashboard**: Manage orders, subscriptions, and inventory
+- **Error Monitoring**: Comprehensive error tracking and reporting
+- **Mobile Responsive**: Fully responsive design works on all devices
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f11ed106-e12d-448f-9f7b-6d52a5877ea8) and start prompting.
+- **Frontend**: React, TypeScript, Tailwind CSS, Shadcn UI
+- **Backend**: Supabase (PostgreSQL, Authentication, Storage)
+- **State Management**: React Context API, React Query
+- **Testing**: Vitest
+- **CI/CD**: Built-in deployment scripts
 
-Changes made via Lovable will be committed automatically to this repo.
+## Setup Instructions
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v18 or newer)
+- npm or yarn
+- Supabase account and project
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Environment Setup
 
-Follow these steps:
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/lush-milk.git
+   cd lush-milk
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Install dependencies
+   ```
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. Create a `.env` file in the root directory with the following variables:
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_KEY=your_supabase_anon_key
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. Set up the database
+   ```
+   npm run db:migrate
+   npm run db:seed
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Running the Application
+
+#### Development Mode
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+#### Production Build
+```
+npm run build:prod
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+#### Testing
+```
+npm run test
+```
 
-**Use GitHub Codespaces**
+## Database Management
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Apply Migrations**: `npm run db:migrate`
+- **Seed Database**: `npm run db:seed`
+- **Start Local DB**: `npm run db:start`
+- **Check DB Status**: `npm run db:status`
+- **Stop Local DB**: `npm run db:stop`
 
-## What technologies are used for this project?
+## Production Readiness Checklist
 
-This project is built with .
+- [x] Environment variable validation
+- [x] Error monitoring and reporting
+- [x] Secure payment processing
+- [x] Input validation and sanitization
+- [x] Database migration scripts
+- [x] Automated testing
+- [x] Production build optimization
+- [x] Security checks
+- [x] Authentication and authorization
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Security Features
 
-## How can I deploy this project?
+- Row-Level Security (RLS) for database tables
+- No hardcoded credentials
+- Secure environment variable management
+- Data validation before database operations
 
-Simply open [Lovable](https://lovable.dev/projects/f11ed106-e12d-448f-9f7b-6d52a5877ea8) and click on Share -> Publish.
+## Deployment
 
-## Can I connect a custom domain to my Lovable project?
+The application is configured for deployment on any modern hosting platform. For production deployments, ensure:
 
-Yes it is!
+1. All environment variables are properly set
+2. Database migrations are applied
+3. Run the security check before deployment:
+   ```
+   npm run security-check
+   ```
+4. Build the production version:
+   ```
+   npm run prepare-release
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Contributing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Submit a pull request
+
+## License
+
+[MIT License](LICENSE)

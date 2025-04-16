@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '../components/Layout';
 import { Button } from '@/components/ui/button';
@@ -111,8 +110,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-medium text-lushmilk-brown mb-1">Email</h3>
-                      <p className="text-lushmilk-charcoal/80">Customer Support: support@lushmilk.com</p>
-                      <p className="text-lushmilk-charcoal/80">Orders & Inquiries: orders@lushmilk.com</p>
+                      <p className="text-lushmilk-charcoal/80">Customer Support: support@lushmilk.in</p>
+                      <p className="text-lushmilk-charcoal/80">Orders & Inquiries: orders@lushmilk.in</p>
                     </div>
                   </div>
                   

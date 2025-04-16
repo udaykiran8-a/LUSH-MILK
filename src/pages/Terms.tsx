@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -147,7 +146,7 @@ const Terms = () => {
                 If you have any questions about our Terms and Conditions, please contact us at:
               </p>
               <p className="font-medium">
-                Email: info@lushmilk.com<br />
+                Email: info@lushmilk.in<br />
                 Phone: +91 9876543210<br />
                 Address: 123 Milk Street, Chennai, Tamil Nadu, India - 600001
               </p>

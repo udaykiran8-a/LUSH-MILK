@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Limit cleartext traffic to specific domains -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">lushmilk.in</domain>
+        
+        <!-- Certificate pinning for production domain -->
+        <pin-set expiration="2025-12-31">
+            <!-- SHA-256 hash of the certificate's Subject Public Key Info, base64 encoded -->
+            <pin digest="SHA-256">YmFzZTY0IGVuY29kZWQgaGFzaA==</pin>
+            <!-- Add a backup pin for key rotation -->
+            <pin digest="SHA-256">YW5vdGhlciBiYXNlNjQgZW5jb2RlZCBoYXNo</pin>
+        </pin-set>
+    </domain-config>
+    
+    <!-- Default configuration for all other domains -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config> 

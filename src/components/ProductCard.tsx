@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart } from 'lucide-react';
@@ -6,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { getDeviceCategory } from '@/config/mobile';
+import { mobileConfig } from '@/config/mobile';
 
 export interface Product {
   id: number;
@@ -17,6 +18,8 @@ export interface Product {
   category: string;
   popular?: boolean;
   priceInRupees?: number; // Add option to display price in Rupees
+  lowResImage?: string;
+  mediumResImage?: string;
 }
 
 interface ProductCardProps {
@@ -45,6 +48,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
   // Calculate price to display (either in $ or ₹)
   const displayPrice = product.priceInRupees || (product.price * 70);
 
+  const deviceCategory = getDeviceCategory();
+  const imageQuality = mobileConfig.performance[deviceCategory].imageQuality;
+  const imageSrc = 
+    imageQuality === 'low' && product.lowResImage ? product.lowResImage :
+    imageQuality === 'medium' && product.mediumResImage ? product.mediumResImage :
+    product.image;
+
   return (
     <motion.div
       className="bg-white rounded-lg shadow-md overflow-hidden border border-lushmilk-cream/30 hover:shadow-xl transition-all duration-300 hover:border-lushmilk-terracotta/30 flex flex-col h-full"
@@ -62,11 +72,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index }) => {
     >
       <div className="relative h-48 md:h-56 overflow-hidden">
         <motion.img 
-          src={product.image} 
+          src={imageSrc} 
           alt={product.name} 
           className="w-full h-full object-cover"
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.5 }}
+          loading="lazy"
+          width={300}
+          height={300}
+          style={{ aspectRatio: '1/1' }}
         />
         {product.popular && (
           <Badge className="absolute top-2 right-2 bg-lushmilk-terracotta text-white">
